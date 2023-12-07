@@ -149,6 +149,18 @@ namespace MQTTAvalonia
 		{
 			ReceivedMessagesTextBox.Text += $"{message}\n";
 		}
+		
+		private void ShowLastMessage(object sender, RoutedEventArgs e)
+		{
+			string lastTopicID = GetLastTopicIDFromDatabase(); // Annahme: Methode, um die ID des letzten Topics abzurufen
+			string lastTopic = GetTopic(lastTopicID); // Verwendung der GetTopic-Methode, um den Namen des Topics abzurufen
+			string lastMessage = GetMessage(lastTopic); // Verwendung der GetMessage-Methode, um die letzte Nachricht für das Topic abzurufen
+
+			// Setzen der letzten Nachricht in die MessageTextBox
+			MessageTextBox.Text = lastMessage;
+		}
+
+
 
 
 
@@ -183,6 +195,23 @@ namespace MQTTAvalonia
 				cmd.ExecuteNonQuery();
 			}
 		}
+		
+		private string GetLastTopicIDFromDatabase()
+		{
+			using (SqliteConnection con = new SqliteConnection("Data Source=" + appdata + DB_path))
+			{
+				string selectLastTopicID = "SELECT MAX(TID) FROM STOPIC";
+
+				using (SqliteCommand cmd = new SqliteCommand(selectLastTopicID, con))
+				{
+					con.Open();
+					object result = cmd.ExecuteScalar();
+					return result?.ToString() ?? string.Empty;
+				}
+			}
+		}
+
+		
 
 		public string GetTopic(string id)
 		{
@@ -197,21 +226,7 @@ namespace MQTTAvalonia
 				}
 			}
 		}
-
-		public string get_Topic(string id)
-		{
-			//get Topic from id
-			using (SqliteConnection con = new SqliteConnection("Data Source=" + appdata + DB_path))
-			{
-				string Select_Topic = "SELECT TNAME FROM STOPIC WHERE TID = " + id;
-
-				SqliteCommand cmd = new SqliteCommand(Select_Topic, con);
-
-				string Result = Convert.ToString(cmd.ExecuteScalar());
-
-				return (Result);
-			}
-		}
+		
 
 		private string GetMessage(string topic)
 		{
