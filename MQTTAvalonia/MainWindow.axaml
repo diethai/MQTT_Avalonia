@@ -1,0 +1,28 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        mc:Ignorable="d" 
+        x:Class="MQTTAvalonia.MainWindow"
+        Title="MQTT Client"
+        Width="800"
+        Height="600">
+
+    <StackPanel Margin="10">
+        <StackPanel Orientation="Horizontal">
+            <TextBox x:Name="BrokerUrlTextBox" Watermark="Enter Broker URL" Margin="0,0,10,0" Width="300"/>
+            <Button Content="Connect" Click="Connect"/>
+            <Button Content="Disconnect" Click="DisconnectClicked" Margin="10,0,0,0"/>
+        </StackPanel>
+        
+        <StackPanel Orientation="Horizontal" Margin="0,10,0,0">
+            <TextBox x:Name="TopicTextBox" Watermark="Enter Topic" Margin="0,0,10,0" Width="300"/>
+            <TextBox x:Name="MessageTextBox" Watermark="Enter Message" Margin="0,0,10,0" Width="300"/>
+            <Button Content="Publish" Click="PublishMessage"/>
+        </StackPanel>
+        
+        <Button Content="Delete All Received Messages" Click="DeleteReceivedMessages" Margin="0,10,0,0"/>
+        <TextBox Name="ReceivedMessagesTextBox" Margin="0,10,0,0" TextWrapping="Wrap" AcceptsReturn="True" Height="150"/>
+    </StackPanel>
+
+</Window>
