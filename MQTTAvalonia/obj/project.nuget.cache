@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "toYtJcvRvSKPilaxWl1uOKyKnxVEVKDJ+y0cPMU8tUbqjXyXwGFtK57YvUDLgxjZMNQqtt4qASHSY4xBaqqRag==",
+  "dgSpecHash": "Bw5X3crGr/S99bWMJ7DOi+VXYxqAtZ+ydDiVHUStwB5DXfFInLRP7ovnsHTDGf1SG9L43rzG5eFx9fNDh8yYLQ==",
   "success": true,
-  "projectFilePath": "/Users/mariaelisabethhanebutt/MQTT_Avalonia/MQTTAvalonia/MQTTAvalonia.csproj",
+  "projectFilePath": "/Users/mariaelisabethhanebutt/RiderProjects/MQTT_Avalonia_/MQTTAvalonia/MQTTAvalonia.csproj",
   "expectedPackageFiles": [
     "/Users/mariaelisabethhanebutt/.nuget/packages/avalonia/11.0.5/avalonia.11.0.5.nupkg.sha512",
     "/Users/mariaelisabethhanebutt/.nuget/packages/avalonia.angle.windows.natives/2.1.0.2023020321/avalonia.angle.windows.natives.2.1.0.2023020321.nupkg.sha512",

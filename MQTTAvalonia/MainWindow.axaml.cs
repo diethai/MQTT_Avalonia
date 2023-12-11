@@ -14,6 +14,9 @@ namespace MQTTAvalonia
 {
 	public partial class MainWindow : Window
 	{
+		// Deklariere die XAML-Elemente, um sie in der C#-Klasse zu verwenden
+		
+		
 		// Broker URI und Port
 		static string brokerUri = "broker.hivemq.com";
 
@@ -22,9 +25,7 @@ namespace MQTTAvalonia
 		private string receivedMessage;
 
 		#region Properties
-
 		public string? BindingTest { get; set; }
-
 		public MqttClient? Client { get; set; }
 		public string? BrokerUri { get; set; }
 		public bool UseAuth { get; set; }
@@ -35,6 +36,7 @@ namespace MQTTAvalonia
 		public List<string> SelectedTopics { get; set; } = new List<string>();
 		public string? Topic { get; set; }
 		public string? Message { get; set; }
+		
 
 		public string appdata = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
 			"MQTT_Broker");
@@ -69,21 +71,28 @@ namespace MQTTAvalonia
 
 		private void Connect(object? sender, RoutedEventArgs e)
 		{
-			// Optional: Event-Handler für eingehende Nachrichten
 			string brokerUrl = BrokerUrlTextBox.Text;
 			client = new MqttClient(brokerUrl);
 			client.MqttMsgPublishReceived += Client_MqttMsgPublishReceived;
 
 			// Verbindung zum Broker herstellen
 			string clientId = Guid.NewGuid().ToString();
-			client.Connect(clientId);
+    
+			try
+			{
+				client.Connect(clientId);
+				ConnectionStatusTextBox.Text = "Connected";
+			}
+			catch (Exception ex)
+			{
+				ConnectionStatusTextBox.Text = "Connection failed";
+				Console.WriteLine("Connection failed: " + ex.Message);
+				// Hier kannst du entsprechend auf den Verbindungsfehler reagieren
+			}
 		}
 
-		private void Disconnect(object? sender, RoutedEventArgs e)
-		{
-			client.Disconnect();
-		}
 
+		
 		private void PublishMessage(object sender, RoutedEventArgs e)
 		{
 			string topic = TopicTextBox.Text;
@@ -101,31 +110,23 @@ namespace MQTTAvalonia
 		{
 			ReceivedMessagesTextBox.Text = "";
 		}
-
-
-
-
-		private void Submit(object sender, RoutedEventArgs e)
-		{
-			// Nachricht veröffentlichen
-			string topic = "test/topic";
-			string message = "Hello, MQTT!";
-			client.Publish(topic, System.Text.Encoding.UTF8.GetBytes(message));
-
-			// Auf Nachrichten in einem bestimmten Thema hören
-			client.Subscribe(new string[] { topic }, new byte[] { MqttMsgBase.QOS_LEVEL_AT_LEAST_ONCE });
-		}
-
-		private void Receive(object sender, RoutedEventArgs e)
-		{
-			// Angekommene Nachricht anzeigen
-			ReceivedMessagesTextBox.Text = receivedMessage;
-		}
+		
 
 		private void DisconnectClicked(object? sender, RoutedEventArgs e)
 		{
-			// Verbindung trennen
-			client.Disconnect();
+			if (client != null && client.IsConnected)
+			{
+				client.Disconnect();
+				ConnectionStatusTextBox.Text = "Disconnected";
+			}
+			else
+			{
+				ConnectionStatusTextBox.Text = "Client is either null or not connected.";
+				// Handle the case where the client is null or not connected
+				// This could involve displaying a message or logging an error
+				Console.WriteLine("Client is either null or not connected.");
+			}
+
 		}
 
 		// Aktualisierte Methode zum Behandeln von empfangenen Nachrichten für abonnierte Topics
