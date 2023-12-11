@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Interactivity;
@@ -11,186 +12,238 @@ using Microsoft.Data.Sqlite;
 
 namespace MQTTAvalonia
 {
-    public partial class MainWindow : Window
-    {
-        // Broker URI und Port
-        static string brokerUri = "broker.hivemq.com";
-        // MQTT-Client erstellen
-        MqttClient client = new MqttClient(brokerUri);
-        private string receivedMessage;
-        
-        #region Properties
-        public string? BindingTest { get; set; }
+	public partial class MainWindow : Window
+	{
+		// Deklariere die XAML-Elemente, um sie in der C#-Klasse zu verwenden
+		
+		
+		// Broker URI und Port
+		static string brokerUri = "broker.hivemq.com";
 
-        public MqttClient? Client { get; set; }
-        public string? BrokerUri { get; set; }
-        public bool UseAuth { get; set; }
-        public string? AuthUser { get; set; }
-        public string? AuthPass { get; set; }
-        public int? ConnectionStatus { get; set; }
-        public List<string> AvailableTopics { get; set; } = new List<string>();
-        public List<string> SelectedTopics { get; set; } = new List<string>();
-        public string? Topic { get; set; }
-        public string? Message { get; set; }
-        public string appdata = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) , "MQTT_Broker");
-        public string DB_path = "MQTT_DB.db";
+		// MQTT-Client erstellen
+		MqttClient client = new MqttClient(brokerUri);
+		private string receivedMessage;
 
-        #endregion // Properties
+		#region Properties
+		public string? BindingTest { get; set; }
+		public MqttClient? Client { get; set; }
+		public string? BrokerUri { get; set; }
+		public bool UseAuth { get; set; }
+		public string? AuthUser { get; set; }
+		public string? AuthPass { get; set; }
+		public int? ConnectionStatus { get; set; }
+		public List<string> AvailableTopics { get; set; } = new List<string>();
+		public List<string> SelectedTopics { get; set; } = new List<string>();
+		public string? Topic { get; set; }
+		public string? Message { get; set; }
+		
 
-       #region Constructor
-        public MainWindow()
-        {
-            InitializeComponent();
-            create_DB_ifnotexists();
-            BindingTest = "Test123";
-        }
-        #endregion
-        
-        #region Methods
-        private void Connect(object? sender, RoutedEventArgs e)
-        {
-            // Optional: Event-Handler für eingehende Nachrichten
-            string brokerUrl = BrokerUrlTextBox.Text;
-            client = new MqttClient(brokerUrl);
-            client.MqttMsgPublishReceived += Client_MqttMsgPublishReceived;
+		public string appdata = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
+			"MQTT_Broker");
 
-            // Verbindung zum Broker herstellen
-            string clientId = Guid.NewGuid().ToString();
-            client.Connect(clientId);
-        }
-        
-        private void Disconnect(object? sender, RoutedEventArgs e)
-        {
-	        client.Disconnect();
-        }
-        
-        private void PublishMessage(object sender, RoutedEventArgs e)
-        {
-	        string topic = TopicTextBox.Text;
-	        string message = MessageTextBox.Text;
+		public string DB_path = "MQTT_DB.db";
 
-	        client.Publish(topic, System.Text.Encoding.UTF8.GetBytes(message));
-	        client.Subscribe(new string[] { topic }, new byte[] { MqttMsgBase.QOS_LEVEL_AT_LEAST_ONCE });
-        }
-        private void DeleteReceivedMessages(object sender, RoutedEventArgs e)
-        {
-	        ReceivedMessagesTextBox.Text = "";
-        }
-        
-        
-        private void Submit(object sender, RoutedEventArgs e)
-        {
-            // Nachricht veröffentlichen
-            string topic = "test/topic";
-            string message = "Hello, MQTT!";
-            client.Publish(topic, System.Text.Encoding.UTF8.GetBytes(message));
+		#endregion // Properties
 
-            // Auf Nachrichten in einem bestimmten Thema hören
-            client.Subscribe(new string[] { topic }, new byte[] { MqttMsgBase.QOS_LEVEL_AT_LEAST_ONCE });
-        }
+		#region Constructor
 
-        private void Receive(object sender, RoutedEventArgs e)
-        {
-            // Angekommene Nachricht anzeigen
-            ReceivedMessagesTextBox.Text = receivedMessage;
-        }
+		public MainWindow()
+		{
+			InitializeComponent();
+			CreateDBIfNotExists();
+			BindingTest = "Test123";
+		}
 
-        private void DisconnectClicked(object? sender, RoutedEventArgs e)
-        {
-            // Verbindung trennen
-            client.Disconnect();
-        }
+		#endregion
 
-        private void Client_MqttMsgPublishReceived(object sender, MqttMsgPublishEventArgs e)
-        {
-            // Verarbeitung der eingehenden Nachricht
-            string receivedMessage = System.Text.Encoding.UTF8.GetString(e.Message);
-            
-            // Operation auf dem UI-Thread ausführen
-            Dispatcher.UIThread.InvokeAsync(() =>
-            {
-	            // Update der empfangenen Nachrichten in der großen Textbox
-	            UpdateReceivedMessages(receivedMessage);
-            });
-        }
-        
-        private void UpdateReceivedMessages(string message)
-        {
-	        ReceivedMessagesTextBox.Text += $"{message}\n";
-        }
-        
-        
-        
-        #endregion
-        
-        #region Sqllite
-        
-        public void create_DB_ifnotexists()
-        		{
-        			//Ordner erstellen, wenn nicht existent
-        			if (Directory.Exists(appdata) == false)
-        			{
-        				Directory.CreateDirectory(appdata);
-        			}
-        
-        			//DB erstellen, wenn nicht existent
-        			if (!File.Exists(Path.Combine(appdata , DB_path)))
-        			{
-        				File.Create(Path.Combine(appdata , DB_path));
-        				//Application.Restart();
-        				//Restart damit DB erkannt wird
-        			}
-        
-        			var test = Path.Combine(appdata, DB_path);
-        			using (var connect = new SqliteConnection("Data Source=" + Path.Combine(appdata , DB_path)))
-        			{
-        				connect.Open();
-        
-        				//SQL Commands zum erstellen der Tabellen
-        				var createT1 = "CREATE TABLE IF NOT EXISTS STOPIC (TID INTEGER, TNAME TEXT, MID INTEGER, PRIMARY KEY(TID))";
-        				var createT2 = "CREATE TABLE IF NOT EXISTS SMSG (MID INTEGER, MTEXT TEXT, PRIMARY KEY(MID))";
-        
-        				//ausführen des Commands
-        				var cmd = new SqliteCommand(createT1, connect);
-        				cmd.ExecuteNonQuery();
-        
-        				//ausführen des Commands
-        				cmd = new SqliteCommand(createT2, connect);
-        				cmd.ExecuteNonQuery();
-        			}
-        		}
-        
-        public string get_Topic(string id)
-        {
-	        //get Topic from id
-	        using (SqliteConnection con = new SqliteConnection("Data Source=" + appdata + DB_path))
-	        {
-		        string Select_Topic = "SELECT TNAME FROM STOPIC WHERE TID = " + id;
+		private void SubscribeToTopic(object sender, RoutedEventArgs e)
+		{
+			string topic = SubscribeTopicTextBox.Text;
 
-		        SqliteCommand cmd = new SqliteCommand(Select_Topic, con);
+			// Abonnieren des angegebenen Topics
+			client.Subscribe(new string[] { topic }, new byte[] { MqttMsgBase.QOS_LEVEL_AT_LEAST_ONCE });
 
-		        string Result = Convert.ToString(cmd.ExecuteScalar());
+			// Möglicherweise hier auch das Empfangen von Nachrichten behandeln
+			// client.MqttMsgPublishReceived += Client_MqttMsgPublishReceived;
+		}
 
-		        return (Result);
-	        }
-        }
-        
-        private string get_MSG(string Topic)
-        {
-	        //get MSG from Topic
-	        using (SqliteConnection connect = new SqliteConnection("Data Source=" + appdata + DB_path))
-	        {
-		        string Select_MSG = "SELECT MTEXT FROM SMSG WHERE MID = (SELECT MID FROM STOPIC WHERE TNAME =" + Topic + ")";
+		#region Methods
 
-		        SqliteCommand cmd = new SqliteCommand(Select_MSG, connect);
+		private void Connect(object? sender, RoutedEventArgs e)
+		{
+			string brokerUrl = BrokerUrlTextBox.Text;
+			client = new MqttClient(brokerUrl);
+			client.MqttMsgPublishReceived += Client_MqttMsgPublishReceived;
 
-		        string Result = Convert.ToString(cmd.ExecuteScalar());
+			// Verbindung zum Broker herstellen
+			string clientId = Guid.NewGuid().ToString();
+    
+			try
+			{
+				client.Connect(clientId);
+				ConnectionStatusTextBox.Text = "Connected";
+			}
+			catch (Exception ex)
+			{
+				ConnectionStatusTextBox.Text = "Connection failed";
+				Console.WriteLine("Connection failed: " + ex.Message);
+				// Hier kannst du entsprechend auf den Verbindungsfehler reagieren
+			}
+		}
 
-		        return (Result);
-	        }
-        }
-        
-        #endregion
-        
-    }
+
+		
+		private void PublishMessage(object sender, RoutedEventArgs e)
+		{
+			string topic = TopicTextBox.Text;
+			string message = MessageTextBox.Text;
+
+			// Aktualisieren der empfangenen Nachrichten, indem die neue Nachricht hinzugefügt wird
+			UpdateReceivedMessages($"Topic: {topic}, Nachricht: {message}");
+
+			// Hier kannst du den Publish-Vorgang fortsetzen, wenn gewünscht
+			// client.Publish(topic, System.Text.Encoding.UTF8.GetBytes(message));
+			// client.Subscribe(new string[] { topic }, new byte[] { MqttMsgBase.QOS_LEVEL_AT_LEAST_ONCE });
+		}
+
+		private void DeleteReceivedMessages(object sender, RoutedEventArgs e)
+		{
+			ReceivedMessagesTextBox.Text = "";
+		}
+		
+
+		private void DisconnectClicked(object? sender, RoutedEventArgs e)
+		{
+			if (client != null && client.IsConnected)
+			{
+				client.Disconnect();
+				ConnectionStatusTextBox.Text = "Disconnected";
+			}
+			else
+			{
+				ConnectionStatusTextBox.Text = "Client is either null or not connected.";
+				// Handle the case where the client is null or not connected
+				// This could involve displaying a message or logging an error
+				Console.WriteLine("Client is either null or not connected.");
+			}
+
+		}
+
+		// Aktualisierte Methode zum Behandeln von empfangenen Nachrichten für abonnierte Topics
+		private void Client_MqttMsgPublishReceived(object sender, MqttMsgPublishEventArgs e)
+		{
+			string receivedMessage = System.Text.Encoding.UTF8.GetString(e.Message);
+
+			Dispatcher.UIThread.InvokeAsync(() =>
+			{
+				// Überprüfen, ob die empfangene Nachricht zu einem abonnierten Topic gehört
+				string subscribedTopic = SelectedTopics.FirstOrDefault(t => t.Equals(e.Topic));
+				if (subscribedTopic != null)
+				{
+					// Anzeigen der empfangenen Nachricht für das abonnierte Topic
+					UpdateReceivedMessages($"Topic: {e.Topic}, Nachricht: {receivedMessage}");
+				}
+			});
+		}
+
+		private void UpdateReceivedMessages(string message)
+		{
+			ReceivedMessagesTextBox.Text += $"{message}\n";
+		}
+		
+		private void ShowLastMessage(object sender, RoutedEventArgs e)
+		{
+			string lastTopicID = GetLastTopicIDFromDatabase(); // Annahme: Methode, um die ID des letzten Topics abzurufen
+			string lastTopic = GetTopic(lastTopicID); // Verwendung der GetTopic-Methode, um den Namen des Topics abzurufen
+			string lastMessage = GetMessage(lastTopic); // Verwendung der GetMessage-Methode, um die letzte Nachricht für das Topic abzurufen
+
+			// Setzen der letzten Nachricht in die MessageTextBox
+			MessageTextBox.Text = lastMessage;
+		}
+
+
+
+
+
+		#endregion
+
+		#region Sqllite
+
+		public void CreateDBIfNotExists()
+		{
+			if (!Directory.Exists(appdata))
+			{
+				Directory.CreateDirectory(appdata);
+			}
+
+			if (!File.Exists(Path.Combine(appdata, DB_path)))
+			{
+				File.Create(Path.Combine(appdata, DB_path)).Close();
+			}
+
+			using (var connection = new SqliteConnection("Data Source=" + Path.Combine(appdata, DB_path)))
+			{
+				connection.Open();
+
+				var createT1 =
+					"CREATE TABLE IF NOT EXISTS STOPIC (TID INTEGER, TNAME TEXT, MID INTEGER, PRIMARY KEY(TID))";
+				var createT2 = "CREATE TABLE IF NOT EXISTS SMSG (MID INTEGER, MTEXT TEXT, PRIMARY KEY(MID))";
+
+				var cmd = new SqliteCommand(createT1, connection);
+				cmd.ExecuteNonQuery();
+
+				cmd = new SqliteCommand(createT2, connection);
+				cmd.ExecuteNonQuery();
+			}
+		}
+		
+		private string GetLastTopicIDFromDatabase()
+		{
+			using (SqliteConnection con = new SqliteConnection("Data Source=" + appdata + DB_path))
+			{
+				string selectLastTopicID = "SELECT MAX(TID) FROM STOPIC";
+
+				using (SqliteCommand cmd = new SqliteCommand(selectLastTopicID, con))
+				{
+					con.Open();
+					object result = cmd.ExecuteScalar();
+					return result?.ToString() ?? string.Empty;
+				}
+			}
+		}
+
+		
+
+		public string GetTopic(string id)
+		{
+			using (SqliteConnection con = new SqliteConnection("Data Source=" + appdata + DB_path))
+			{
+				string selectTopic = "SELECT TNAME FROM STOPIC WHERE TID = " + id;
+
+				using (SqliteCommand cmd = new SqliteCommand(selectTopic, con))
+				{
+					object result = cmd.ExecuteScalar();
+					return result?.ToString() ?? string.Empty;
+				}
+			}
+		}
+		
+
+		private string GetMessage(string topic)
+		{
+			using (SqliteConnection connect = new SqliteConnection("Data Source=" + appdata + DB_path))
+			{
+				string selectMsg = "SELECT MTEXT FROM SMSG WHERE MID = (SELECT MID FROM STOPIC WHERE TNAME = @Topic)";
+				using (SqliteCommand cmd = new SqliteCommand(selectMsg, connect))
+				{
+					cmd.Parameters.AddWithValue("@Topic", topic);
+					object result = cmd.ExecuteScalar();
+					return result?.ToString() ?? string.Empty;
+				}
+			}
+
+			#endregion
+
+		}
+	}
 }
