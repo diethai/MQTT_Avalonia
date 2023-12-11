@@ -4933,11 +4933,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "/Users/mariaelisabethhanebutt/MQTT_Avalonia/MQTTAvalonia/MQTTAvalonia.csproj",
+      "projectUniqueName": "/Users/mariaelisabethhanebutt/RiderProjects/MQTT_Avalonia_/MQTTAvalonia/MQTTAvalonia.csproj",
       "projectName": "MQTTAvalonia",
-      "projectPath": "/Users/mariaelisabethhanebutt/MQTT_Avalonia/MQTTAvalonia/MQTTAvalonia.csproj",
+      "projectPath": "/Users/mariaelisabethhanebutt/RiderProjects/MQTT_Avalonia_/MQTTAvalonia/MQTTAvalonia.csproj",
       "packagesPath": "/Users/mariaelisabethhanebutt/.nuget/packages/",
-      "outputPath": "/Users/mariaelisabethhanebutt/MQTT_Avalonia/MQTTAvalonia/obj/",
+      "outputPath": "/Users/mariaelisabethhanebutt/RiderProjects/MQTT_Avalonia_/MQTTAvalonia/obj/",
       "projectStyle": "PackageReference",
       "configFilePaths": [
         "/Users/mariaelisabethhanebutt/.nuget/NuGet/NuGet.Config"

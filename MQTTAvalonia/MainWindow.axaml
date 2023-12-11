@@ -29,7 +29,14 @@
             <Button Content="Abonnieren" Click="SubscribeToTopic"/>
         </StackPanel>
 
+        <!-- Label für den Verbindungsstatus -->
+        <StackPanel Orientation="Horizontal" Margin="0,10,0,0">
+            <TextBlock Text="Connection status: " VerticalAlignment="Center" Margin="0,0,10,0"/>
+            <TextBox x:Name="ConnectionStatusTextBox" Margin="0,0,0,0" IsReadOnly="True" TextWrapping="Wrap" AcceptsReturn="True" Height="50"/>
+        </StackPanel>
+
         <!-- Neuer Button für die letzte Nachricht -->
         <Button Content="Letzte Nachricht anzeigen" Click="ShowLastMessage" Margin="0,10,0,0"/>
     </StackPanel>
 </Window>
+
