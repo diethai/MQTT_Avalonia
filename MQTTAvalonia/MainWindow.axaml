@@ -17,14 +17,14 @@
 		</Grid>
 		<!-- Connection Grid; Note: Has to be improved, working on it bitches -->
 		<Grid Margin="0, 10" ColumnDefinitions="Auto, Auto, Auto">
-			<TextBox Grid.Column="0" x:Name="BrokerUrlTextBox" Watermark="Enter Broker URL" Margin="0,0,10,0" Width="300"/>
+			<TextBox Grid.Column="0" x:Name="BrokerUrlTextBox" Watermark="Enter Broker URL" Margin="0,0,10,0" Width="200"/>
 			<Button Grid.Column="1" Content="Connect" Click="Connect"/>
-			<Button Grid.Column="2" Content="Disconnect" Click="DisconnectClicked" Margin="10,0,0,0"/>
+			<Button Grid.Column="2" Content="Disconnect" Click="DisconnectClicked"/>
 		</Grid>
 
 		<Grid Margin="0, 10" ColumnDefinitions="Auto, Auto">
-			<TextBox Grid.Column="0" x:Name="enterTopicName" Watermark="Enter Topic Name" Margin="0,0,10,0" Width="300"/>
-			<Button Grid.Column="2" Content="Add Topic" Click="AddTopicButtonClicked" Margin="10,0,0,0"/>
+			<TextBox Grid.Column="0" x:Name="enterTopicName" Watermark="Enter Topic Name" Margin="0,0,10,0" Width="200"/>
+			<Button Grid.Column="1" Content="Add Topic" Click="AddTopicButtonClicked"/>
 		</Grid>
 
 
