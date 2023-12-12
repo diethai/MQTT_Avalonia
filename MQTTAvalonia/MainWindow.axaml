@@ -2,40 +2,74 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        mc:Ignorable="d" 
+        mc:Ignorable="d"
         x:Class="MQTTAvalonia.MainWindow"
         Title="MQTT Client"
         Width="800"
         Height="600">
 
-    <StackPanel Margin="10">
-        <StackPanel Orientation="Horizontal">
-            <TextBox x:Name="BrokerUrlTextBox" Watermark="Broker-URL eingeben" Margin="0,0,10,0" Width="300"/>
-            <Button Content="Verbinden" Click="Connect"/>
-            <Button Content="Trennen" Click="DisconnectClicked" Margin="10,0,0,0"/>
-        </StackPanel>
-        
-        <StackPanel Orientation="Horizontal" Margin="0,10,0,0">
-            <TextBox x:Name="TopicTextBox" Watermark="Topic eingeben" Margin="0,0,10,0" Width="300"/>
-            <TextBox x:Name="MessageTextBox" Watermark="Nachricht eingeben" Margin="0,0,10,0" Width="300"/>
-            <Button Content="Veröffentlichen" Click="PublishMessage"/>
-        </StackPanel>
-        
-        <Button Content="Alle empfangenen Nachrichten löschen" Click="DeleteReceivedMessages" Margin="0,10,0,0"/>
-        <TextBox Name="ReceivedMessagesTextBox" Margin="0,10,0,0" TextWrapping="Wrap" AcceptsReturn="True" Height="150"/>
-        
-        <StackPanel Orientation="Horizontal" Margin="0,10,0,0">
-            <TextBox x:Name="SubscribeTopicTextBox" Watermark="Topic zum Abonnieren eingeben" Margin="0,0,10,0" Width="300"/>
-            <Button Content="Abonnieren" Click="SubscribeToTopic"/>
-        </StackPanel>
+	<StackPanel Margin="2">
+		<!-- Head -->
+		<Grid Height="50" Background="Gray" ColumnDefinitions="Auto, *, Auto, Auto">
+			<TextBlock Grid.Column="0" Text="MQTT Client" VerticalAlignment="Center" FontSize="30"></TextBlock>
+			<TextBlock x:Name="connectionStatusTextBlock" Grid.Column="2" Text="disconected" VerticalAlignment="Center"> </TextBlock>
+			<Rectangle x:Name="connectionStatusRectangle" Grid.Column="3" Height="10" Width="10" Fill="Red"> </Rectangle>
+		</Grid>
+		<!-- Connection Grid; Note: Has to be improved, working on it bitches -->
+		<Grid Margin="0, 10" ColumnDefinitions="Auto, Auto, Auto">
+			<TextBox Grid.Column="0" x:Name="BrokerUrlTextBox" Watermark="Enter Broker URL" Margin="0,0,10,0" Width="300"/>
+			<Button Grid.Column="1" Content="Connect" Click="Connect"/>
+			<Button Grid.Column="2" Content="Disconnect" Click="DisconnectClicked" Margin="10,0,0,0"/>
+		</Grid>
 
-        <!-- Label für den Verbindungsstatus -->
-        <StackPanel Orientation="Horizontal" Margin="0,10,0,0">
-            <TextBlock Text="Connection status: " VerticalAlignment="Center" Margin="0,0,10,0"/>
-            <TextBox x:Name="ConnectionStatusTextBox" Margin="0,0,0,0" IsReadOnly="True" TextWrapping="Wrap" AcceptsReturn="True" Height="50"/>
-        </StackPanel>
+		<Grid Margin="0, 10" ColumnDefinitions="Auto, Auto">
+			<TextBox Grid.Column="0" x:Name="enterTopicName" Watermark="Enter Topic Name" Margin="0,0,10,0" Width="300"/>
+			<Button Grid.Column="2" Content="Add Topic" Click="AddTopicButtonClicked" Margin="10,0,0,0"/>
+		</Grid>
 
-        <!-- Neuer Button für die letzte Nachricht -->
-        <Button Content="Letzte Nachricht anzeigen" Click="ShowLastMessage" Margin="0,10,0,0"/>
-    </StackPanel>
+
+
+		<!-- Topic Section-->
+		<Grid ColumnDefinitions="*, Auto">
+			<Border Grid.Column="0" BorderBrush="Black" BorderThickness="2">
+				<StackPanel>
+					<TextBlock Grid.Row="0" Text="Topics"></TextBlock>
+					<Grid Height="150" ColumnDefinitions="Auto, Auto, Auto">
+						<!-- Topic List -->
+						<Border Margin="0, 0, 10, 0" MinWidth="100" MaxWidth="150" BorderBrush="Black" BorderThickness="2">
+								<ListBox Grid.Column="1" x:Name="topicListBox" SelectionMode="Single">
+								</ListBox>
+						</Border>
+						<TextBox  Grid.Column="1" x:Name="MessageTextBox" Watermark="Enter Message" Margin="0,0,10,0" Width="300"/>
+						<Button Grid.Column="2" Content="Publish" VerticalAlignment="Bottom" Click="PublishMessage"></Button>
+					</Grid>
+
+					<Grid ColumnDefinitions="Auto, Auto, *, Auto">
+						<TextBlock Text="Filter" VerticalAlignment="Bottom"></TextBlock>
+						<ComboBox Grid.Column="1" VerticalAlignment="Bottom">
+							<ComboBoxItem>Topic</ComboBoxItem>
+							<ComboBoxItem>Status message</ComboBoxItem>
+							<ComboBoxItem>Everything</ComboBoxItem>
+						</ComboBox>
+						<Button Grid.Column="3" Content="Clear" Click="DeleteReceivedMessages" Margin="0,10,0,0"/>
+					</Grid>
+					<TextBox Name="ReceivedMessagesTextBox" Margin="0,10,0,0" TextWrapping="Wrap" AcceptsReturn="True" Height="150"/>
+				</StackPanel>
+			</Border>
+			<!-- Subscirption Area -->
+			<Border Width="300" Grid.Column="1" BorderBrush="black" BorderThickness="2">
+				<StackPanel>
+					<TextBox Text="Subscritions"></TextBox>
+					<Grid ColumnDefinitions="Auto, Auto" HorizontalAlignment="Right">
+						<Button Grid.Column="0" Content="Add" Click="SubscribeToTopic"></Button>
+						<Button Grid.Column="1" Content="Delete"></Button>
+					</Grid>
+					<Border BorderBrush="Black" BorderThickness="2">
+						<ListBox x:Name="subscriptionListBox" SelectionMode="Single"></ListBox>
+					</Border>
+				</StackPanel>
+			</Border>
+		</Grid>
+	</StackPanel>
+
 </Window>
