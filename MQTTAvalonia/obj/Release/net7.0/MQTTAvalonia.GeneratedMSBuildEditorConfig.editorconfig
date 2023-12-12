@@ -13,12 +13,12 @@ build_property.PlatformNeutralAssembly =
 build_property.EnforceExtendedAnalyzerRules = 
 build_property._SupportedPlatformList = Linux,macOS,Windows
 build_property.RootNamespace = MQTTAvalonia
-build_property.ProjectDir = C:\Users\Herapolus\Source\Repos\diethai\MQTT_Avalonia\MQTTAvalonia\
+build_property.ProjectDir = C:\Users\Herapolus\source\repos\diethai\MQTT_Avalonia\MQTTAvalonia\
 build_property.EnableComHosting = 
 build_property.EnableGeneratedComInterfaceComImportInterop = 
 
-[C:/Users/Herapolus/Source/Repos/diethai/MQTT_Avalonia/MQTTAvalonia/App.axaml]
+[C:/Users/Herapolus/source/repos/diethai/MQTT_Avalonia/MQTTAvalonia/App.axaml]
 build_metadata.AdditionalFiles.SourceItemGroup = AvaloniaXaml
 
-[C:/Users/Herapolus/Source/Repos/diethai/MQTT_Avalonia/MQTTAvalonia/MainWindow.axaml]
+[C:/Users/Herapolus/source/repos/diethai/MQTT_Avalonia/MQTTAvalonia/MainWindow.axaml]
 build_metadata.AdditionalFiles.SourceItemGroup = AvaloniaXaml
