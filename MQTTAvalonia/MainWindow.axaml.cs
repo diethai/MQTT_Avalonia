@@ -12,6 +12,7 @@ using Microsoft.Data.Sqlite;
 using System.Xml.Schema;
 using Avalonia.Media;
 using Tmds.DBus.Protocol;
+using System.Collections.ObjectModel;
 
 namespace MQTTAvalonia
 {
@@ -36,7 +37,7 @@ namespace MQTTAvalonia
 
         public List<string> AvailableTopics { get; set; } = new List<string>();
         public List<string> SelectedTopics { get; set; } = new List<string>();
-        public List<string> SubscribedTopics { get; set; } = new List<string>();
+        public ObservableCollection<string> SubscribedTopics { get; set; } = new ObservableCollection<string>();
 
 
         public string appdata = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
@@ -132,7 +133,7 @@ namespace MQTTAvalonia
 
         private void PublishMessage(object sender, RoutedEventArgs e)
         {
-            if (lb_Topics.SelectedIndex == -1)
+            if (lb_Topics.SelectedIndex <= -1)
             {
                 tb_Message.Text = "Select a topic";
                 return;
@@ -142,13 +143,10 @@ namespace MQTTAvalonia
             string message = tb_Message.Text.Trim();
             if (string.IsNullOrWhiteSpace(message))
             {
-
                 return;
             }
-            //AddTopicToSubscriptionList(topic);
-            // Aktualisieren der empfangenen Nachrichten, indem die neue Nachricht hinzugefügt wird
-            //UpdateReceivedMessages($"Topic: {topic}, Nachricht: {message}"); // Passiert wenn subscribed von allein.
 
+            AddToSubscribedList(topic);
             Client.Publish(topic, System.Text.Encoding.UTF8.GetBytes(message));
         }
 
@@ -366,18 +364,8 @@ namespace MQTTAvalonia
 
         private void SubscribeToTopic_Clicked(object sender, RoutedEventArgs e)
         {
-            if (lb_Topics.SelectedIndex != -1)
-            {
-                string topic = AvailableTopics[lb_Topics.SelectedIndex];
-
-                // Abonnieren des angegebenen Topics
-                Client.Subscribe(new[] { topic }, new byte[] { MqttMsgBase.QOS_LEVEL_AT_LEAST_ONCE });
-                SubscribedTopics.Add(topic);
-
-                lb_Subscriptions.ItemsSource = null;
-                lb_Subscriptions.ItemsSource = SubscribedTopics;
-            }
-
+            string topic = AvailableTopics[lb_Topics.SelectedIndex];
+            AddToSubscribedList(topic);
         }
         private void UnsubscribeFromTopic_Clicked(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
         {
@@ -388,11 +376,26 @@ namespace MQTTAvalonia
 
                 lb_Subscriptions.ItemsSource = null;
                 if (SubscribedTopics.Count > 0)
+                {
                     lb_Subscriptions.ItemsSource = SubscribedTopics;
-                else lb_Subscriptions.Items.Clear();
+                }
+                lb_Subscriptions.InvalidateVisual();
             }
         }
 
         #endregion
+        private void AddToSubscribedList(string topic)
+        {
+            if (lb_Topics.SelectedIndex != -1)
+            {
+                if (!SubscribedTopics.Contains(topic))
+                {
+                    SubscribedTopics.Add(topic);
+                    lb_Subscriptions.ItemsSource = null;
+                    lb_Subscriptions.ItemsSource = SubscribedTopics;
+                    Client.Subscribe(new[] { topic }, new byte[] { MqttMsgBase.QOS_LEVEL_AT_LEAST_ONCE });
+                }
+            }
+        }
     }
 }

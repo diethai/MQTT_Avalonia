@@ -1,20 +1,24 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\Herapolus\\Source\\Repos\\diethai\\MQTT_Avalonia\\MQTTAvalonia\\MQTTAvalonia.csproj": {}
+    "C:\\Users\\Admin\\OneDrive\\Desktop\\MQTT\\MQTTAvalonia\\MQTTAvalonia.csproj": {}
   },
   "projects": {
-    "C:\\Users\\Herapolus\\Source\\Repos\\diethai\\MQTT_Avalonia\\MQTTAvalonia\\MQTTAvalonia.csproj": {
+    "C:\\Users\\Admin\\OneDrive\\Desktop\\MQTT\\MQTTAvalonia\\MQTTAvalonia.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\Herapolus\\Source\\Repos\\diethai\\MQTT_Avalonia\\MQTTAvalonia\\MQTTAvalonia.csproj",
+        "projectUniqueName": "C:\\Users\\Admin\\OneDrive\\Desktop\\MQTT\\MQTTAvalonia\\MQTTAvalonia.csproj",
         "projectName": "MQTTAvalonia",
-        "projectPath": "C:\\Users\\Herapolus\\Source\\Repos\\diethai\\MQTT_Avalonia\\MQTTAvalonia\\MQTTAvalonia.csproj",
-        "packagesPath": "C:\\Users\\Herapolus\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\Herapolus\\Source\\Repos\\diethai\\MQTT_Avalonia\\MQTTAvalonia\\obj\\",
+        "projectPath": "C:\\Users\\Admin\\OneDrive\\Desktop\\MQTT\\MQTTAvalonia\\MQTTAvalonia.csproj",
+        "packagesPath": "C:\\Users\\Admin\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\Admin\\OneDrive\\Desktop\\MQTT\\MQTTAvalonia\\obj\\",
         "projectStyle": "PackageReference",
+        "fallbackFolders": [
+          "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
+        ],
         "configFilePaths": [
-          "C:\\Users\\Herapolus\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Users\\Admin\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
         "originalTargetFrameworks": [
@@ -93,7 +97,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.100\\RuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\7.0.401\\RuntimeIdentifierGraph.json"
         }
       }
     }
