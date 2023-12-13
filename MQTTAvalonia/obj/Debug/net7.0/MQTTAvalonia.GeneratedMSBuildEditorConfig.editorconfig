@@ -13,10 +13,10 @@ build_property.PlatformNeutralAssembly =
 build_property.EnforceExtendedAnalyzerRules = 
 build_property._SupportedPlatformList = Linux,macOS,Windows
 build_property.RootNamespace = MQTTAvalonia
-build_property.ProjectDir = /Users/mariaelisabethhanebutt/RiderProjects/MQTT_Avalonia_/MQTTAvalonia/
+build_property.ProjectDir = C:\Users\Admin\OneDrive\Desktop\MQTT\MQTTAvalonia\
 
-[/Users/mariaelisabethhanebutt/RiderProjects/MQTT_Avalonia_/MQTTAvalonia/App.axaml]
+[C:/Users/Admin/OneDrive/Desktop/MQTT/MQTTAvalonia/App.axaml]
 build_metadata.AdditionalFiles.SourceItemGroup = AvaloniaXaml
 
-[/Users/mariaelisabethhanebutt/RiderProjects/MQTT_Avalonia_/MQTTAvalonia/MainWindow.axaml]
+[C:/Users/Admin/OneDrive/Desktop/MQTT/MQTTAvalonia/MainWindow.axaml]
 build_metadata.AdditionalFiles.SourceItemGroup = AvaloniaXaml
