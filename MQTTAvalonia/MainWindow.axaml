@@ -11,20 +11,20 @@
 	<StackPanel Margin="2">
 		<!-- Head -->
 		<Grid Height="50" Background="Gray" ColumnDefinitions="Auto, *, Auto, Auto">
-			<TextBlock Grid.Column="0" Text="MQTT Client" VerticalAlignment="Center" FontSize="30"></TextBlock>
-			<TextBlock x:Name="connectionStatusTextBlock" Grid.Column="2" Text="disconected" VerticalAlignment="Center"> </TextBlock>
+			<TextBlock Grid.Column="0" Text="MQTT Explorer" VerticalAlignment="Center" FontSize="30"></TextBlock>
+			<TextBlock x:Name="connectionStatusTextBlock" Grid.Column="2" VerticalAlignment="Center"> </TextBlock>
 			<Rectangle x:Name="connectionStatusRectangle" Grid.Column="3" Height="10" Width="10" Fill="Red"> </Rectangle>
 		</Grid>
 		<!-- Connection Grid; Note: Has to be improved, working on it bitches -->
 		<Grid Margin="0, 10" ColumnDefinitions="Auto, Auto, Auto">
-			<TextBox Grid.Column="0" x:Name="BrokerUrlTextBox" Watermark="Enter Broker URL" Margin="0,0,10,0" Width="200"/>
-			<Button Grid.Column="1" Content="Connect" Click="Connect"/>
-			<Button Grid.Column="2" Content="Disconnect" Click="DisconnectClicked"/>
+			<TextBox Grid.Column="0" x:Name="tb_BrokerUrl" TextChanged="BrokerUrl_TextChanged" Watermark="Enter Broker URL" Margin="0,0,10,0" Width="200"/>
+			<Button Grid.Column="1" x:Name="btn_Connect" Content="Connect" Click="ConnectClicked"/>
+			<Button Grid.Column="2" x:Name="btn_Disconnect" Content="Disconnect" Click="DisconnectClicked"/>
 		</Grid>
 
 		<Grid Margin="0, 10" ColumnDefinitions="Auto, Auto">
-			<TextBox Grid.Column="0" x:Name="enterTopicName" Watermark="Enter Topic Name" Margin="0,0,10,0" Width="200"/>
-			<Button Grid.Column="1" Content="Add Topic" Click="AddTopicButtonClicked"/>
+			<TextBox Grid.Column="0" x:Name="tb_EnterTopicName" Watermark="Enter Topic Name" TextChanged="tb_EnterTopicName_TextChanged" Margin="0,0,10,0" Width="200"/>
+			<Button Grid.Column="1" x:Name="btn_AddTopic" Content="Add Topic" Click="AddTopicButtonClicked"/>
 		</Grid>
 
 
@@ -37,11 +37,11 @@
 					<Grid Height="150" ColumnDefinitions="Auto, Auto, Auto">
 						<!-- Topic List -->
 						<Border Margin="0, 0, 10, 0" MinWidth="100" MaxWidth="150" BorderBrush="Black" BorderThickness="2">
-								<ListBox Grid.Column="1" x:Name="topicListBox" SelectionMode="Single">
+								<ListBox Grid.Column="1" x:Name="lb_Topics" SelectionMode="Single">
 								</ListBox>
 						</Border>
-						<TextBox  Grid.Column="1" x:Name="MessageTextBox" Watermark="Enter Message" Margin="0,0,10,0" Width="300"/>
-						<Button Grid.Column="2" Content="Publish" VerticalAlignment="Bottom" Click="PublishMessage"></Button>
+						<TextBox  Grid.Column="1" x:Name="tb_Message" TextChanged="tb_Message_TextChanged" Watermark="Enter Message" Margin="0,0,10,0" Width="300"/>
+						<Button Grid.Column="2" x:Name="btn_Publish" Content="Publish" VerticalAlignment="Bottom" Click="PublishMessage"></Button>
 					</Grid>
 
 					<Grid ColumnDefinitions="Auto, Auto, *, Auto">
@@ -53,19 +53,19 @@
 						</ComboBox>
 						<Button Grid.Column="3" Content="Clear" Click="DeleteReceivedMessages" Margin="0,10,0,0"/>
 					</Grid>
-					<TextBox Name="ReceivedMessagesTextBox" Margin="0,10,0,0" TextWrapping="Wrap" AcceptsReturn="True" Height="150"/>
+					<TextBox Name="tb_ReceivedMessages" Margin="0,10,0,0" TextWrapping="Wrap" AcceptsReturn="True" Height="150"/>
 				</StackPanel>
 			</Border>
-			<!-- Subscirption Area -->
+			<!-- Subscription Area -->
 			<Border Width="300" Grid.Column="1" BorderBrush="black" BorderThickness="2">
 				<StackPanel>
-					<TextBox Text="Subscritions"></TextBox>
+					<TextBlock Text="Subscriptions"></TextBlock>
 					<Grid ColumnDefinitions="Auto, Auto" HorizontalAlignment="Right">
-						<Button Grid.Column="0" Content="Add" Click="SubscribeToTopic"></Button>
-						<Button Grid.Column="1" Content="Delete"></Button>
+						<Button Grid.Column="0" Content="Add" Click="SubscribeToTopic_Clicked"/>
+						<Button Grid.Column="1" Content="Delete" Click="UnsubscribeFromTopic_Clicked" />
 					</Grid>
 					<Border BorderBrush="Black" BorderThickness="2">
-						<ListBox x:Name="subscriptionListBox" SelectionMode="Single"></ListBox>
+						<ListBox x:Name="lb_Subscriptions" SelectionMode="Single"></ListBox>
 					</Border>
 				</StackPanel>
 			</Border>
