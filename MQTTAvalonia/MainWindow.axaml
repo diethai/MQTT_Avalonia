@@ -7,70 +7,76 @@
         Title="MQTT Client"
 		Width="800"
         Height="600"
-        MinWidth="800"
-        MinHeight="600">
+        MinWidth="900"
+        MinHeight="600"
+		Background="Gray">
 
 	<StackPanel Margin="2">
 		<!-- Head -->
-		<Grid Height="50" Background="Gray" ColumnDefinitions="Auto, *, Auto, Auto">
+		<Grid Height="50" Background="LightBlue" ColumnDefinitions="Auto">
 			<TextBlock Grid.Column="0" Text="MQTT Explorer" VerticalAlignment="Center" FontSize="30"></TextBlock>
-			<TextBlock x:Name="connectionStatusTextBlock" Grid.Column="2" VerticalAlignment="Center" Text="Disconnected"> </TextBlock>
-			<Ellipse x:Name="connectionStatusCircle" Grid.Column="3" Margin="3, 0, 3, 0" Height="8" Width="8" Fill="Red"> </Ellipse>
 		</Grid>
-		<!-- Connection Grid; Note: Has to be improved, working on it bitches -->
-
-		<Border Background="LightGray" Margin="0, 3, 0, 3" Width="300" HorizontalAlignment="Left">
-			<Grid Margin="0, 10" ColumnDefinitions="Auto, Auto" HorizontalAlignment="Center">
-				<TextBox Grid.Column="0" x:Name="tb_EnterTopicName" Background="White" Watermark="Enter Topic Name" TextChanged="tb_EnterTopicName_TextChanged" Margin="0,0,10,0" Width="200"/>
-				<Button Grid.Column="1" x:Name="btn_AddTopic" Content="Add Topic" Click="AddTopicButtonClicked"/>
+		<Border Background="WhiteSmoke" Margin="0, 15, 0, 3">
+			<Grid ColumnDefinitions="Auto, *, Auto, Auto, Auto" Height="50">
+				<TextBlock Grid.Column="0" x:Name="connectionStatusTextBlock" Text="Connection" VerticalAlignment="Center" HorizontalAlignment="Left"></TextBlock>
+				<TextBlock Grid.Column="2" x:Name="tb_BrokerName" VerticalAlignment="Center"></TextBlock>
+				<Ellipse Grid.Column="3" x:Name="connectionStatusCircle" Margin="3, 0, 3, 0" Height="8" Width="8" Fill="Red"> </Ellipse>
+				<Button Grid.Column="4" Height="25" Width="25" Click="DisconnectClicked"></Button>
 			</Grid>
 		</Border>
 
+		<!--Body-->
+		<Grid ColumnDefinitions="Auto, *">
+			<!--Left Site-->
 
+			<Grid RowDefinitions="Auto, Auto, Auto">
+				<!--Subscriptions-->
+				<Border Grid.Row="0"  Background="WhiteSmoke" Margin="0, 5, 0, 5">
+					<Grid RowDefinitions="Auto, Auto" Margin="3, 3, 3, 3">
+						<TextBlock Grid.Row="0" Text="Subscriptions"></TextBlock>
+						<!--Enter Topic Section-->
+						<Grid Grid.Row="1" ColumnDefinitions=" *, Auto, Auto">
+							<TextBox x:Name="tb_EnterTopicName" Grid.Column="0" Watermark="Enter Topic"></TextBox>
+							<ComboBox Grid.Column="1"></ComboBox>
+							<Button x:Name="btn_Subscribe" Grid.Column="2" Content="Subscribe" Background="LightBlue" Click="SubscribeToTopic_Clicked"></Button>
+						</Grid>
+					</Grid>
+				</Border>
 
-
-		<!-- Topic Section-->
-		<Grid ColumnDefinitions="*, Auto">
-			<Border Grid.Column="0" BorderBrush="Black" BorderThickness="2">
-				<StackPanel>
-					<TextBlock Grid.Row="0" Text="Topics"></TextBlock>
-					<Grid Height="150" ColumnDefinitions="Auto, Auto, Auto">
-						<!-- Topic List -->
-						<Border Margin="0, 0, 10, 0" MinWidth="100" MaxWidth="150" BorderBrush="Black" BorderThickness="2">
-							<ListBox Grid.Column="1" x:Name="lb_Topics" SelectionMode="Single">
-							</ListBox>
+				<!--Subscribed Topics-->
+				<Border Grid.Row="1"  Background="WhiteSmoke" Margin="0, 0, 0, 5">
+					<Grid RowDefinitions="Auto, *" Height="200" Margin="3, 3, 3, 3">
+						<TextBlock Grid.Row="0" Text="Subscribed Topics"></TextBlock>
+						<Border Grid.Row="1" BorderBrush="black" BorderThickness="2">
+							<ListBox x:Name="lb_Subscriptions" SelectionMode="Single"></ListBox>
 						</Border>
-						<TextBox  Grid.Column="1" x:Name="tb_Message" TextChanged="tb_Message_TextChanged" Watermark="Enter Message" Margin="0,0,10,0" Width="300"/>
-						<Button Grid.Column="2" x:Name="btn_Publish" Content="Publish" VerticalAlignment="Bottom" Click="PublishMessage"></Button>
 					</Grid>
+				</Border>
 
-					<Grid ColumnDefinitions="Auto, Auto, *, Auto">
-						<TextBlock Text="Filter" VerticalAlignment="Bottom"></TextBlock>
-						<ComboBox Grid.Column="1" VerticalAlignment="Bottom">
-							<ComboBoxItem>Topic</ComboBoxItem>
-							<ComboBoxItem>Status message</ComboBoxItem>
-							<ComboBoxItem>Everything</ComboBoxItem>
-						</ComboBox>
-						<Button Grid.Column="3" Content="Clear" Click="DeleteReceivedMessages" Margin="0,10,0,0"/>
+				<!--Publish-->
+				<Border Grid.Row="2" Background="WhiteSmoke">
+				<Grid  RowDefinitions="Auto, *, Auto" Margin="3, 3, 3, 3">
+					<TextBlock Grid.Row="0" Text="Publish"></TextBlock>
+					<TextBox Grid.Row="1" Watermark="Enter Message" x:Name="tb_Message" Height="75"></TextBox>
+					<Grid Grid.Row="2" ColumnDefinitions="Auto, Auto">
+						<ComboBox Grid.Column="0"></ComboBox>
+						<Button x:Name="btn_Publish" Grid.Column="1" Click="PublishMessage" Content="Publish" Background="LightBlue"></Button>
 					</Grid>
-					<TextBox Name="tb_ReceivedMessages" Margin="0,10,0,0" TextWrapping="Wrap" AcceptsReturn="True" Height="150"/>
-				</StackPanel>
-			</Border>
-			<!-- Subscription Area -->
-			<Border Width="300" Grid.Column="1" BorderBrush="black" BorderThickness="2">
-				<StackPanel>
-					<TextBlock Text="Subscriptions"></TextBlock>
-					<Grid ColumnDefinitions="Auto, Auto" HorizontalAlignment="Right">
-						<Button Grid.Column="0" Content="Add" Click="SubscribeToTopic_Clicked"/>
-						<Button Grid.Column="1" Content="Delete" Click="UnsubscribeFromTopic_Clicked" />
-					</Grid>
-					<Border BorderBrush="Black" BorderThickness="2">
-						<ListBox x:Name="lb_Subscriptions" SelectionMode="Single"></ListBox>
+				</Grid>
+				</Border>
+			</Grid>
+
+			<!--Right Site-->
+			<Border Grid.Column="1" Background="WhiteSmoke"  Margin="5, 5, 5, 0">
+				<Grid RowDefinitions="Auto, *, Auto">
+					<TextBlock Grid.Row="0" Height="25" Text="Messages" Margin="3, 5, 0, 0" ></TextBlock>
+					<Border Grid.Row="1" BorderBrush="Gray" BorderThickness="1" Margin="3, 0, 3, 3">
+						<TextBlock x:Name="tb_ReceivedMessage"></TextBlock>
 					</Border>
-				</StackPanel>
+					<Button Grid.Row="2" Click="DeleteReceivedMessages" Width="25" Height="25" HorizontalAlignment="Right" Margin="0, 3, 3, 3"></Button>
+				</Grid>
 			</Border>
 		</Grid>
-		<Button Content="Disconnect" HorizontalAlignment="Right" Click="DisconnectClicked"></Button>
 	</StackPanel>
 
 </Window>

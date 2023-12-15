@@ -22,6 +22,7 @@ namespace MQTTAvalonia
                 return;
             }
             m_mainWindow.GoBackRequested += OnGoBackRequested;
+            m_mainWindow.setBrokerNameString(tb_BrokerURL.Text);
             this.Hide();
             m_mainWindow.Show();
         }
