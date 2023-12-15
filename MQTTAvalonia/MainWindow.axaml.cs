@@ -18,26 +18,24 @@ namespace MQTTAvalonia
 {
     public partial class MainWindow : Window
     {
-        // Deklariere die XAML-Elemente, um sie in der C#-Klasse zu verwenden
-        List<string> m_topicStringList = new List<string>();
-        List<string> m_subscriptionStringList = new List<string>();
-
         #region Properties
         // Broker URI und Port
         // broker.hivemq.com
         public string? BrokerUri { get; set; }
         public MqttClient? Client { get; set; }
 
+        public EventHandler GoBackRequested;
+
         //public bool UseAuth { get; set; }
         //public string? AuthUser { get; set; }
         //public string? AuthPass { get; set; }
-        public string? TopicName { get; set; }
-        public string? ReceivedMessage { get; set; }
-        public bool IsConnected { get; set; } = false;
+        public string? m_TopicName { get; set; }
+        public string? m_ReceivedMessage { get; set; }
+        public bool m_IsConnected { get; set; } = false;
 
-        public List<string> AvailableTopics { get; set; } = new List<string>();
-        public List<string> SelectedTopics { get; set; } = new List<string>();
-        public ObservableCollection<string> SubscribedTopics { get; set; } = new ObservableCollection<string>();
+        public List<string> m_AvailableTopics { get; set; } = new List<string>();
+        public List<string> m_SelectedTopics { get; set; } = new List<string>();
+        public ObservableCollection<string> m_SubscribedTopics { get; set; } = new ObservableCollection<string>();
 
 
         public string appdata = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
@@ -45,35 +43,33 @@ namespace MQTTAvalonia
 
         public string DB_path = "MQTT_DB.db";
 
+        public string m_connectionStatus;
+
         #endregion // Properties
 
         #region Constructor
-
         public MainWindow()
         {
             InitializeComponent();
             DataContext = this;
-
-            DisconnectedDisableControlAccess();
-            //topicListBox.ItemsSource = AvailableTopics;
-            //CreateDBIfNotExists();
         }
-
-
         #endregion
-
-
 
         #region Methods
 
-        private void ConnectClicked(object? sender, RoutedEventArgs e)
+        public void setBrokerNameString(string brokerName)
         {
-            BrokerUri = Convert.ToString(tb_BrokerUrl.Text?.Trim());
+            tb_BrokerName.Text = brokerName;
+        }
+
+        public bool ConnectToBroker(string brokerURL)
+        {
+            BrokerUri = Convert.ToString(brokerURL?.Trim());
             if (string.IsNullOrEmpty(BrokerUri))
             {
-                connectionStatusTextBlock.Text = "No Broker IP provided";
-                connectionStatusRectangle.Fill = Brushes.Red;
-                return;
+                m_connectionStatus = "No Broker IP provided";
+                connectionStatusCircle.Fill = Brushes.Red;
+                return false;
             }
 
             try
@@ -83,11 +79,12 @@ namespace MQTTAvalonia
             }
             catch (Exception ex)
             {
-                connectionStatusTextBlock.Text = "Connection failed";
-                connectionStatusRectangle.Fill = Brushes.Red;
+                m_connectionStatus = "Connection failed";
+                connectionStatusCircle.Fill = Brushes.Red;
                 Console.WriteLine("Connection failed: " + ex.Message);
-                return;
+                return false;
             }
+
 
             // Verbindung zum Broker herstellen
             string clientId = Guid.NewGuid().ToString();
@@ -95,19 +92,18 @@ namespace MQTTAvalonia
             try
             {
                 Client.Connect(clientId);
-                connectionStatusTextBlock.Text = "Connected";
-                IsConnected = Client.IsConnected;
+                m_IsConnected = Client.IsConnected;
 
-                connectionStatusRectangle.Fill = Brushes.Green;
+                connectionStatusCircle.Fill = Brushes.Green;
             }
             catch (Exception ex)
             {
-                connectionStatusTextBlock.Text = "Connection failed";
-                connectionStatusRectangle.Fill = Brushes.Red;
+                m_connectionStatus = "Connection failed";
+                connectionStatusCircle.Fill = Brushes.Red;
                 Console.WriteLine("Connection failed: " + ex.Message);
-                return;
+                return false;
             }
-            ConnectedEnableControlAccess();
+            return true;
         }
 
         private void DisconnectClicked(object? sender, RoutedEventArgs e)
@@ -115,11 +111,10 @@ namespace MQTTAvalonia
             if (Client != null && Client.IsConnected)
             {
                 Client.Disconnect();
-                connectionStatusTextBlock.Text = "Disconnected";
-                connectionStatusRectangle.Fill = Brushes.Red;
+                connectionStatusCircle.Fill = Brushes.Red;
 
-                IsConnected = false;
-                DisconnectedDisableControlAccess();
+                m_IsConnected = false;
+                OnGoBackReuqetsed();
             }
             else
             {
@@ -130,50 +125,30 @@ namespace MQTTAvalonia
             }
         }
 
+        public void OnGoBackReuqetsed()
+        {
+            GoBackRequested?.Invoke(this, EventArgs.Empty);
+        }
 
         private void PublishMessage(object sender, RoutedEventArgs e)
         {
-            if (lb_Topics.SelectedIndex <= -1)
+            if (lb_Subscriptions.SelectedIndex != -1)
             {
-                tb_Message.Text = "Select a topic";
-                return;
+                string topic = m_SubscribedTopics[lb_Subscriptions.SelectedIndex];
+                string message = tb_Message.Text.Trim();
+                if (string.IsNullOrWhiteSpace(message))
+                {
+                    return;
+                }
+                Client.Publish(topic, System.Text.Encoding.UTF8.GetBytes(message));
             }
-
-            string topic = AvailableTopics[lb_Topics.SelectedIndex];
-            string message = tb_Message.Text.Trim();
-            if (string.IsNullOrWhiteSpace(message))
-            {
-                return;
-            }
-
-            AddToSubscribedList(topic);
-            Client.Publish(topic, System.Text.Encoding.UTF8.GetBytes(message));
         }
 
         private void DeleteReceivedMessages(object sender, RoutedEventArgs e)
         {
-            tb_ReceivedMessages.Text = "";
+            tb_ReceivedMessage.Text = "";
         }
 
-
-
-
-        private void AddTopicButtonClicked(object? sender, RoutedEventArgs e)
-        {
-            TopicName = tb_EnterTopicName.Text.Trim();
-
-            if (!string.IsNullOrEmpty(TopicName) && IsConnected && AvailableTopics.FirstOrDefault(item => item == TopicName) == null)
-            {
-                //Client.Publish(TopicName, System.Text.Encoding.UTF8.GetBytes("Topic created"));
-                //AddTopicToList(TopicName);
-                AvailableTopics.Add(TopicName);
-                lb_Topics.ItemsSource = null;
-                if (AvailableTopics.Count > 0)
-                    lb_Topics.ItemsSource = AvailableTopics;
-                else lb_Topics.Items.Clear();
-
-            }
-        }
 
         // Aktualisierte Methode zum Behandeln von empfangenen Nachrichten für abonnierte Topics
         private void Client_MqttMsgPublishReceived(object sender, MqttMsgPublishEventArgs e)
@@ -183,7 +158,7 @@ namespace MQTTAvalonia
             Dispatcher.UIThread.InvokeAsync(() =>
             {
                 // Überprüfen, ob die empfangene Nachricht zu einem abonnierten Topic gehört
-                string subscribedTopic = SubscribedTopics.FirstOrDefault(t => t.Equals(e.Topic));
+                string subscribedTopic = m_SubscribedTopics.FirstOrDefault(t => t.Equals(e.Topic));
                 if (subscribedTopic != null)
                 {
                     // Anzeigen der empfangenen Nachricht für das abonnierte Topic
@@ -194,7 +169,7 @@ namespace MQTTAvalonia
 
         private void UpdateReceivedMessages(string message)
         {
-            tb_ReceivedMessages.Text += $"{message}\n\n";
+            tb_ReceivedMessage.Text += $"{message}\n\n";
         }
 
         private void ShowLastMessage(object sender, RoutedEventArgs e)
@@ -212,37 +187,6 @@ namespace MQTTAvalonia
         }
 
 
-        private void ConnectedEnableControlAccess()
-        {
-            btn_Disconnect.IsEnabled = true;
-            btn_Connect.IsEnabled = false;
-            btn_AddTopic.IsEnabled = !string.IsNullOrWhiteSpace(tb_EnterTopicName.Text);
-            tb_EnterTopicName.IsEnabled = true;
-            tb_BrokerUrl.IsEnabled = false;
-            tb_Message.IsEnabled = true;
-            btn_Publish.IsEnabled = !string.IsNullOrWhiteSpace(tb_Message.Text);
-
-        }
-        private void DisconnectedDisableControlAccess()
-        {
-
-            btn_Disconnect.IsEnabled = false;
-            btn_Connect.IsEnabled = !string.IsNullOrWhiteSpace(tb_BrokerUrl.Text);
-            tb_EnterTopicName.IsEnabled = false;
-            btn_AddTopic.IsEnabled = false;
-            tb_BrokerUrl.IsEnabled = true;
-            tb_Message.IsEnabled = false;
-            btn_Publish.IsEnabled = false;
-
-            lb_Subscriptions.ItemsSource = null;
-            lb_Subscriptions.Items.Clear();
-            lb_Topics.ItemsSource = null;
-            lb_Topics.Items.Clear();
-            SubscribedTopics.Clear();
-            AvailableTopics.Clear();
-            tb_Message.Clear();
-            tb_ReceivedMessages.Clear();
-        }
 
 
 
@@ -331,25 +275,12 @@ namespace MQTTAvalonia
 
         #region Events
 
-
-        private void BrokerUrl_TextChanged(object? sender, Avalonia.Controls.TextChangedEventArgs e)
-        {
-            if (!string.IsNullOrWhiteSpace(tb_BrokerUrl.Text) && IsConnected != true)
-            {
-                btn_Connect.IsEnabled = true;
-            }
-            else
-            {
-                btn_Connect.IsEnabled = false;
-            }
-        }
-
         private void tb_EnterTopicName_TextChanged(object? sender, Avalonia.Controls.TextChangedEventArgs e)
         {
             if (!string.IsNullOrWhiteSpace(tb_EnterTopicName.Text?.Trim()))
-                btn_AddTopic.IsEnabled = true;
+                btn_Subscribe.IsEnabled = true;
             else
-                btn_AddTopic.IsEnabled = false;
+                btn_Subscribe.IsEnabled = false;
 
         }
 
@@ -364,20 +295,19 @@ namespace MQTTAvalonia
 
         private void SubscribeToTopic_Clicked(object sender, RoutedEventArgs e)
         {
-            string topic = AvailableTopics[lb_Topics.SelectedIndex];
-            AddToSubscribedList(topic);
+            AddToSubscribedList(tb_EnterTopicName.Text);
         }
         private void UnsubscribeFromTopic_Clicked(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
         {
             if (lb_Subscriptions.SelectedIndex != -1)
             {
-                Client.Unsubscribe(new[] { SubscribedTopics[lb_Subscriptions.SelectedIndex] });
-                SubscribedTopics.RemoveAt(lb_Subscriptions.SelectedIndex);
+                Client.Unsubscribe(new[] { m_SubscribedTopics[lb_Subscriptions.SelectedIndex] });
+                m_SubscribedTopics.RemoveAt(lb_Subscriptions.SelectedIndex);
 
                 lb_Subscriptions.ItemsSource = null;
-                if (SubscribedTopics.Count > 0)
+                if (m_SubscribedTopics.Count > 0)
                 {
-                    lb_Subscriptions.ItemsSource = SubscribedTopics;
+                    lb_Subscriptions.ItemsSource = m_SubscribedTopics;
                 }
                 lb_Subscriptions.InvalidateVisual();
             }
@@ -386,16 +316,15 @@ namespace MQTTAvalonia
         #endregion
         private void AddToSubscribedList(string topic)
         {
-            if (lb_Topics.SelectedIndex != -1)
+
+            if (!m_SubscribedTopics.Contains(topic))
             {
-                if (!SubscribedTopics.Contains(topic))
-                {
-                    SubscribedTopics.Add(topic);
-                    lb_Subscriptions.ItemsSource = null;
-                    lb_Subscriptions.ItemsSource = SubscribedTopics;
-                    Client.Subscribe(new[] { topic }, new byte[] { MqttMsgBase.QOS_LEVEL_AT_LEAST_ONCE });
-                }
+                m_SubscribedTopics.Add(topic);
+                lb_Subscriptions.ItemsSource = null;
+                lb_Subscriptions.ItemsSource = m_SubscribedTopics;
+                Client.Subscribe(new[] { topic }, new byte[] { MqttMsgBase.QOS_LEVEL_AT_LEAST_ONCE });
             }
+
         }
     }
 }
