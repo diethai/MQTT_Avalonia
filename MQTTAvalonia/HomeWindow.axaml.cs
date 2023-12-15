@@ -32,5 +32,25 @@ namespace MQTTAvalonia
             m_mainWindow.Close();
             this.Show();
         }
+
+        private void ToggleAuthControls()
+        {
+            if ((bool)cb_UseAuth.IsChecked)
+            {
+                tb_Username.IsVisible = true; tb_Password.IsVisible = true;
+            }
+            else
+            {
+                tb_Username.IsVisible = false; tb_Password.IsVisible = false;
+            }
+            
+
+            
+        }
+
+        private void cb_UseAuth_Click(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
+        {
+            ToggleAuthControls();
+        }
     }
 }
