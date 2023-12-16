@@ -9,14 +9,20 @@
         Height="600"
         MinWidth="900"
         MinHeight="600"
-		Background="Gray">
+		Background="LightGray">
 
 	<StackPanel Margin="2">
 		<!-- Head -->
-		<Grid Height="50" Background="LightBlue" ColumnDefinitions="Auto">
+		<Grid Height="50"  ColumnDefinitions="Auto">
+			<Grid.Background>
+				<LinearGradientBrush StartPoint="0, 0" EndPoint="30, 160">
+					<GradientStop Color="White" Offset="0"></GradientStop>
+					<GradientStop Color="Darkblue" Offset="1"></GradientStop>
+				</LinearGradientBrush>
+			</Grid.Background>
 			<TextBlock Grid.Column="0" Text="MQTT Explorer" VerticalAlignment="Center" FontSize="30"></TextBlock>
 		</Grid>
-		<Border Background="WhiteSmoke" Margin="0, 15, 0, 3">
+		<Border Background="WhiteSmoke" CornerRadius="10" Margin="0, 15, 0, 3">
 			<Grid ColumnDefinitions="Auto, *, Auto, Auto, Auto" Height="50">
 				<TextBlock Grid.Column="0" x:Name="connectionStatusTextBlock" Text="Connection" VerticalAlignment="Center" HorizontalAlignment="Left"></TextBlock>
 				<TextBlock Grid.Column="2" x:Name="tb_BrokerName" VerticalAlignment="Center"></TextBlock>
@@ -31,35 +37,43 @@
 
 			<Grid RowDefinitions="Auto, Auto, Auto">
 				<!--Subscriptions-->
-				<Border Grid.Row="0"  Background="WhiteSmoke" Margin="0, 5, 0, 5">
+				<Border Grid.Row="0" CornerRadius="10" Background="WhiteSmoke" Margin="0, 5, 0, 5">
 					<Grid RowDefinitions="Auto, Auto" Margin="3, 3, 3, 3">
 						<TextBlock Grid.Row="0" Text="Subscriptions"></TextBlock>
 						<!--Enter Topic Section-->
 						<Grid Grid.Row="1" ColumnDefinitions=" *, Auto, Auto">
 							<TextBox x:Name="tb_EnterTopicName" Grid.Column="0" Watermark="Enter Topic"></TextBox>
-							<ComboBox Grid.Column="1"></ComboBox>
+							<ComboBox Grid.Column="1" x:Name="cb_QosSubscribe" SelectedIndex="0">
+								<ComboBoxItem Content="QOS: 0"></ComboBoxItem>
+								<ComboBoxItem Content="QOS: 1"></ComboBoxItem>
+								<ComboBoxItem Content="QOS: 2"></ComboBoxItem>
+							</ComboBox>
 							<Button x:Name="btn_Subscribe" Grid.Column="2" Content="Subscribe" Background="LightBlue" Click="SubscribeToTopic_Clicked"></Button>
 						</Grid>
 					</Grid>
 				</Border>
 
 				<!--Subscribed Topics-->
-				<Border Grid.Row="1"  Background="WhiteSmoke" Margin="0, 0, 0, 5">
+				<Border Grid.Row="1" CornerRadius="10" Background="WhiteSmoke" Margin="0, 0, 0, 5">
 					<Grid RowDefinitions="Auto, *" Height="200" Margin="3, 3, 3, 3">
 						<TextBlock Grid.Row="0" Text="Subscribed Topics"></TextBlock>
-						<Border Grid.Row="1" BorderBrush="black" BorderThickness="2">
+						<Border Grid.Row="1" CornerRadius="3" BorderBrush="black" BorderThickness="2">
 							<ListBox x:Name="lb_Subscriptions" SelectionMode="Single"></ListBox>
 						</Border>
 					</Grid>
 				</Border>
 
 				<!--Publish-->
-				<Border Grid.Row="2" Background="WhiteSmoke">
+				<Border Grid.Row="2" CornerRadius="10" Background="WhiteSmoke">
 				<Grid  RowDefinitions="Auto, *, Auto" Margin="3, 3, 3, 3">
 					<TextBlock Grid.Row="0" Text="Publish"></TextBlock>
 					<TextBox Grid.Row="1" Watermark="Enter Message" x:Name="tb_Message" Height="75"></TextBox>
 					<Grid Grid.Row="2" ColumnDefinitions="Auto, Auto">
-						<ComboBox Grid.Column="0"></ComboBox>
+						<ComboBox x:Name="cb_QosPublish" Grid.Column="0" SelectedIndex="0">
+							<ComboBoxItem Content="QOS: 0"></ComboBoxItem>
+							<ComboBoxItem Content="QOS: 1"></ComboBoxItem>
+							<ComboBoxItem Content="QOS: 2"></ComboBoxItem>
+						</ComboBox>
 						<Button x:Name="btn_Publish" Grid.Column="1" Click="PublishMessage" Content="Publish" Background="LightBlue"></Button>
 					</Grid>
 				</Grid>
@@ -67,13 +81,16 @@
 			</Grid>
 
 			<!--Right Site-->
-			<Border Grid.Column="1" Background="WhiteSmoke"  Margin="5, 5, 5, 0">
+			<Border Grid.Column="1" CornerRadius="10" Background="WhiteSmoke"  Margin="5, 5, 5, 0">
 				<Grid RowDefinitions="Auto, *, Auto">
 					<TextBlock Grid.Row="0" Height="25" Text="Messages" Margin="3, 5, 0, 0" ></TextBlock>
 					<Border Grid.Row="1" BorderBrush="Gray" BorderThickness="1" Margin="3, 0, 3, 3">
 						<TextBlock x:Name="tb_ReceivedMessage"></TextBlock>
 					</Border>
-					<Button Grid.Row="2" Click="DeleteReceivedMessages" Width="25" Height="25" HorizontalAlignment="Right" Margin="0, 3, 3, 3"></Button>
+					<Grid Grid.Row="2" ColumnDefinitions="Auto, * Auto">
+						<TextBlock  Width="100" Grid.Column="0" x:Name="tb_qosStatus"></TextBlock>
+						<Button Grid.Column="2" Click="DeleteReceivedMessages" Width="25" Height="25" HorizontalAlignment="Right" Margin="0, 3, 3, 3"></Button>
+					</Grid>
 				</Grid>
 			</Border>
 		</Grid>

@@ -13,6 +13,7 @@ using System.Xml.Schema;
 using Avalonia.Media;
 using Tmds.DBus.Protocol;
 using System.Collections.ObjectModel;
+using Avalonia.Controls.Documents;
 
 namespace MQTTAvalonia
 {
@@ -25,6 +26,7 @@ namespace MQTTAvalonia
         public MqttClient? Client { get; set; }
 
         public EventHandler GoBackRequested;
+        private string status;
 
         //public bool UseAuth { get; set; }
         //public string? AuthUser { get; set; }
@@ -76,6 +78,7 @@ namespace MQTTAvalonia
             {
                 Client = new MqttClient(BrokerUri);
                 Client.MqttMsgPublishReceived += Client_MqttMsgPublishReceived;
+                Client.MqttMsgPublished += Client_MqttMsgPublished;
             }
             catch (Exception ex)
             {
@@ -104,6 +107,22 @@ namespace MQTTAvalonia
                 return false;
             }
             return true;
+        }
+
+        private void Client_MqttMsgPublished(object sender, MqttMsgPublishedEventArgs e)
+        {
+            if (e.IsPublished)
+            {
+                status = "Funkt";
+            }
+            else
+            {
+                Console.WriteLine("Fehler beim Veröffentlichen der Nachricht.");
+            }
+            Dispatcher.UIThread.InvokeAsync(() =>
+            {
+                tb_qosStatus.Text = status;
+            });
         }
 
         private void DisconnectClicked(object? sender, RoutedEventArgs e)
@@ -140,10 +159,22 @@ namespace MQTTAvalonia
                 {
                     return;
                 }
-                Client.Publish(topic, System.Text.Encoding.UTF8.GetBytes(message));
+                byte qosLevel = getQosLevel(cb_QosPublish.SelectedIndex);
+                Client.Publish(topic, System.Text.Encoding.UTF8.GetBytes(message), qosLevel, false);
             }
         }
 
+        private byte getQosLevel(int index)
+        {
+            switch (index)
+            {
+                default: return MqttMsgBase.QOS_LEVEL_AT_MOST_ONCE; break;
+                case 1: return MqttMsgBase.QOS_LEVEL_AT_LEAST_ONCE; break;
+                case 2: return MqttMsgBase.QOS_LEVEL_EXACTLY_ONCE; break;
+
+            }
+
+        }
         private void DeleteReceivedMessages(object sender, RoutedEventArgs e)
         {
             tb_ReceivedMessage.Text = "";
