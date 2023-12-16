@@ -87,8 +87,9 @@
 					<Border Grid.Row="1" BorderBrush="Gray" BorderThickness="1" Margin="3, 0, 3, 3">
 						<TextBlock x:Name="tb_ReceivedMessage"></TextBlock>
 					</Border>
-					<Grid Grid.Row="2" ColumnDefinitions="Auto, * Auto">
-						<TextBlock  Width="100" Grid.Column="0" x:Name="tb_qosStatus"></TextBlock>
+					<Grid Grid.Row="2" ColumnDefinitions="Auto, Auto, * Auto" Margin="5, 0, 0, 0">
+						<TextBlock Grid.Column="0" Text="QOS Status: " VerticalAlignment="Center" HorizontalAlignment="Right"></TextBlock>
+						<TextBlock  Width="100" Grid.Column="1" x:Name="tb_qosStatus" VerticalAlignment="Center" HorizontalAlignment="Left"></TextBlock>
 						<Button Grid.Column="2" Click="DeleteReceivedMessages" Width="25" Height="25" HorizontalAlignment="Right" Margin="0, 3, 3, 3"></Button>
 					</Grid>
 				</Grid>

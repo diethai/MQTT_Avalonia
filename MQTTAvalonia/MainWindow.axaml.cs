@@ -20,17 +20,11 @@ namespace MQTTAvalonia
     public partial class MainWindow : Window
     {
         #region Properties
-        // Broker URI und Port
-        // broker.hivemq.com
         public string? BrokerUri { get; set; }
         public MqttClient? Client { get; set; }
 
         public EventHandler GoBackRequested;
-        private string status;
 
-        //public bool UseAuth { get; set; }
-        //public string? AuthUser { get; set; }
-        //public string? AuthPass { get; set; }
         public string? m_TopicName { get; set; }
         public string? m_ReceivedMessage { get; set; }
         public bool m_IsConnected { get; set; } = false;
@@ -47,7 +41,7 @@ namespace MQTTAvalonia
 
         public string m_connectionStatus;
 
-        #endregion // Properties
+        #endregion 
 
         #region Constructor
         public MainWindow()
@@ -88,8 +82,6 @@ namespace MQTTAvalonia
                 return false;
             }
 
-
-            // Verbindung zum Broker herstellen
             string clientId = Guid.NewGuid().ToString();
 
             try
@@ -111,13 +103,14 @@ namespace MQTTAvalonia
 
         private void Client_MqttMsgPublished(object sender, MqttMsgPublishedEventArgs e)
         {
+            string status;
             if (e.IsPublished)
             {
                 status = "Funkt";
             }
             else
             {
-                Console.WriteLine("Fehler beim Veröffentlichen der Nachricht.");
+                status = "funkt nicht";
             }
             Dispatcher.UIThread.InvokeAsync(() =>
             {
@@ -180,19 +173,15 @@ namespace MQTTAvalonia
             tb_ReceivedMessage.Text = "";
         }
 
-
-        // Aktualisierte Methode zum Behandeln von empfangenen Nachrichten für abonnierte Topics
         private void Client_MqttMsgPublishReceived(object sender, MqttMsgPublishEventArgs e)
         {
             string receivedMessage = System.Text.Encoding.UTF8.GetString(e.Message);
 
             Dispatcher.UIThread.InvokeAsync(() =>
             {
-                // Überprüfen, ob die empfangene Nachricht zu einem abonnierten Topic gehört
                 string subscribedTopic = m_SubscribedTopics.FirstOrDefault(t => t.Equals(e.Topic));
                 if (subscribedTopic != null)
                 {
-                    // Anzeigen der empfangenen Nachricht für das abonnierte Topic
                     UpdateReceivedMessages($"{e.Topic}:\t {receivedMessage}");
                 }
             });
@@ -206,14 +195,12 @@ namespace MQTTAvalonia
         private void ShowLastMessage(object sender, RoutedEventArgs e)
         {
             string
-                lastTopicID = GetLastTopicIDFromDatabase(); // Annahme: Methode, um die ID des letzten Topics abzurufen
+                lastTopicID = GetLastTopicIDFromDatabase();
             string
-                lastTopic = GetTopic(lastTopicID); // Verwendung der GetTopic-Methode, um den Namen des Topics abzurufen
+                lastTopic = GetTopic(lastTopicID);
             string
                 lastMessage =
-                    GetMessage(lastTopic); // Verwendung der GetMessage-Methode, um die letzte Nachricht für das Topic abzurufen
-
-            // Setzen der letzten Nachricht in die MessageTextBox
+                    GetMessage(lastTopic);
             tb_Message.Text = lastMessage;
         }
 
