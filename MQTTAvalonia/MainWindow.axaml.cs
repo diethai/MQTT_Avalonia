@@ -164,7 +164,6 @@ namespace MQTTAvalonia
                 default: return MqttMsgBase.QOS_LEVEL_AT_MOST_ONCE; break;
                 case 1: return MqttMsgBase.QOS_LEVEL_AT_LEAST_ONCE; break;
                 case 2: return MqttMsgBase.QOS_LEVEL_EXACTLY_ONCE; break;
-
             }
 
         }
@@ -177,13 +176,13 @@ namespace MQTTAvalonia
         {
             string receivedMessage = System.Text.Encoding.UTF8.GetString(e.Message);
 
+            //string? subscribedTopicMatch = null;
+            //subscribedTopicMatch = m_SubscribedTopics.FirstOrDefault(t => t.Equals(e.Topic));
+
             Dispatcher.UIThread.InvokeAsync(() =>
             {
-                string subscribedTopic = m_SubscribedTopics.FirstOrDefault(t => t.Equals(e.Topic));
-                if (subscribedTopic != null)
-                {
+                //if (subscribedTopicMatch != null)
                     UpdateReceivedMessages($"{e.Topic}:\t {receivedMessage}");
-                }
             });
         }
 
