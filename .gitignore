@@ -1,3 +1,12 @@
 .DS_Store
 .idea
 /.vs
+/MQTTAvalonia/obj/Debug/net7.0/Avalonia/Resources.Inputs.cache
+/MQTTAvalonia/obj/Debug/net7.0/MQTTAvalonia.AssemblyInfo.cs
+/MQTTAvalonia/obj/Debug/net7.0/MQTTAvalonia.AssemblyInfoInputs.cache
+/MQTTAvalonia/obj/Debug/net7.0/MQTTAvalonia.csproj.AssemblyReference.cache
+/MQTTAvalonia/obj/Debug/net7.0/MQTTAvalonia.GeneratedMSBuildEditorConfig.editorconfig
+/MQTTAvalonia/obj/Release/net7.0/Avalonia/resources
+/MQTTAvalonia/obj/Release/net7.0/Avalonia/Resources.Inputs.cache
+/MQTTAvalonia/obj/Release/net7.0/MQTTAvalonia.csproj.AssemblyReference.cache
+/MQTTAvalonia/obj/Release/net7.0/MQTTAvalonia.GeneratedMSBuildEditorConfig.editorconfig
