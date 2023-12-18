@@ -106,11 +106,11 @@ namespace MQTTAvalonia
             string status;
             if (e.IsPublished)
             {
-                status = "Funkt";
+                status = "Publish succesful";
             }
             else
             {
-                status = "funkt nicht";
+                status = "Error: Publishing was not succesful";
             }
             Dispatcher.UIThread.InvokeAsync(() =>
             {
@@ -182,7 +182,7 @@ namespace MQTTAvalonia
             Dispatcher.UIThread.InvokeAsync(() =>
             {
                 //if (subscribedTopicMatch != null)
-                    UpdateReceivedMessages($"{e.Topic}:\t {receivedMessage}");
+                UpdateReceivedMessages($"{e.Topic}:\t {receivedMessage}");
             });
         }
 
@@ -336,10 +336,11 @@ namespace MQTTAvalonia
 
             if (!m_SubscribedTopics.Contains(topic))
             {
+                byte qosLevel = getQosLevel(cb_QosSubscribe.SelectedIndex);
                 m_SubscribedTopics.Add(topic);
                 lb_Subscriptions.ItemsSource = null;
                 lb_Subscriptions.ItemsSource = m_SubscribedTopics;
-                Client.Subscribe(new[] { topic }, new byte[] { MqttMsgBase.QOS_LEVEL_AT_LEAST_ONCE });
+                Client.Subscribe(new[] { topic }, new byte[] { qosLevel });
             }
 
         }

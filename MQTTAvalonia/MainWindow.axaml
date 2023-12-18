@@ -65,18 +65,18 @@
 
 				<!--Publish-->
 				<Border Grid.Row="2" CornerRadius="10" Background="WhiteSmoke">
-				<Grid  RowDefinitions="Auto, *, Auto" Margin="3, 3, 3, 3">
-					<TextBlock Grid.Row="0" Text="Publish"></TextBlock>
-					<TextBox Grid.Row="1" Watermark="Enter Message" x:Name="tb_Message" Height="75"></TextBox>
-					<Grid Grid.Row="2" ColumnDefinitions="Auto, Auto">
-						<ComboBox x:Name="cb_QosPublish" Grid.Column="0" SelectedIndex="0">
-							<ComboBoxItem Content="QOS: 0"></ComboBoxItem>
-							<ComboBoxItem Content="QOS: 1"></ComboBoxItem>
-							<ComboBoxItem Content="QOS: 2"></ComboBoxItem>
-						</ComboBox>
-						<Button x:Name="btn_Publish" Grid.Column="1" Click="PublishMessage" Content="Publish" Background="LightBlue"></Button>
+					<Grid  RowDefinitions="Auto, *, Auto" Margin="3, 3, 3, 3">
+						<TextBlock Grid.Row="0" Text="Publish"></TextBlock>
+						<TextBox Grid.Row="1" Watermark="Enter Message" x:Name="tb_Message" Height="75"></TextBox>
+						<Grid Grid.Row="2" ColumnDefinitions="Auto, Auto">
+							<ComboBox x:Name="cb_QosPublish" Grid.Column="0" SelectedIndex="0">
+								<ComboBoxItem Content="QOS: 0"></ComboBoxItem>
+								<ComboBoxItem Content="QOS: 1"></ComboBoxItem>
+								<ComboBoxItem Content="QOS: 2"></ComboBoxItem>
+							</ComboBox>
+							<Button x:Name="btn_Publish" Grid.Column="1" Click="PublishMessage" Content="Publish" Background="LightBlue"></Button>
+						</Grid>
 					</Grid>
-				</Grid>
 				</Border>
 			</Grid>
 
@@ -84,12 +84,10 @@
 			<Border Grid.Column="1" CornerRadius="10" Background="WhiteSmoke"  Margin="5, 5, 5, 0">
 				<Grid RowDefinitions="Auto, *, Auto">
 					<TextBlock Grid.Row="0" Height="25" Text="Messages" Margin="3, 5, 0, 0" ></TextBlock>
-					<Border Grid.Row="1" BorderBrush="Gray" BorderThickness="1" Margin="3, 0, 3, 3">
-						<TextBlock x:Name="tb_ReceivedMessage"></TextBlock>
-					</Border>
+					<TextBox Grid.Row="1" x:Name="tb_ReceivedMessage" IsReadOnly="true" MaxHeight="330" Margin="3, 3, 3, 3" ></TextBox>
 					<Grid Grid.Row="2" ColumnDefinitions="Auto, Auto, * Auto" Margin="5, 0, 0, 0">
 						<TextBlock Grid.Column="0" Text="QOS Status: " VerticalAlignment="Center" HorizontalAlignment="Right"></TextBlock>
-						<TextBlock  Width="100" Grid.Column="1" x:Name="tb_qosStatus" VerticalAlignment="Center" HorizontalAlignment="Left"></TextBlock>
+						<TextBlock  Width="300" Grid.Column="1" x:Name="tb_qosStatus" VerticalAlignment="Center" HorizontalAlignment="Left"></TextBlock>
 						<Button Grid.Column="2" Click="DeleteReceivedMessages" Width="25" Height="25" HorizontalAlignment="Right" Margin="0, 3, 3, 3"></Button>
 					</Grid>
 				</Grid>
