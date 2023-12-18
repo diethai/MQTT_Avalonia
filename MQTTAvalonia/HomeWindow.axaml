@@ -23,11 +23,11 @@
 		<!-- Connection Grid -->
 			<Grid Grid.Row="1" RowDefinitions="Auto, Auto, Auto, Auto, Auto, Auto, Auto" >
 				<TextBlock x:Name="tb_status" Text="Connect To Broker" HorizontalAlignment="Center"/>
-				<TextBox x:Name="tb_BrokerURL" Grid.Row="1" Watermark="Enter Broker URL" Margin="0, 3, 0, 0"/>
-				<TextBox x:Name="tb_Port" Grid.Row="2" Watermark="Enter Port" Margin="0, 3, 0, 0"/>
+				<TextBox x:Name="tb_BrokerURL" Grid.Row="1" KeyDown="tb_Connect_KeyDown" Watermark="Enter Broker URL" Margin="0, 3, 0, 0"/>
+				<TextBox x:Name="tb_Port" Grid.Row="2" KeyDown="tb_Connect_KeyDown" Watermark="Enter Port" Margin="0, 3, 0, 0"/>
 				<CheckBox x:Name="cb_UseAuth" Grid.Row="3" Content="Use Authorization" Click="cb_UseAuth_Click"/>
-				<TextBox x:Name="tb_Username" Grid.Row="4" Watermark="Enter Username" IsVisible="False" Margin="0, 3, 0, 0"/>
-				<TextBox x:Name="tb_Password" Grid.Row="5" Watermark="Enter Password" IsVisible="False" Margin="0, 3, 0, 0"/>
+				<TextBox x:Name="tb_Username" Grid.Row="4" KeyDown="tb_Connect_KeyDown" Watermark="Enter Username" IsVisible="False" Margin="0, 3, 0, 0"/>
+				<TextBox x:Name="tb_Password" PasswordChar="*" Grid.Row="5" KeyDown="tb_Connect_KeyDown" Watermark="Enter Password" IsVisible="False" Margin="0, 3, 0, 0"/>
 				<Button Grid.Row="6" Content="Connect" HorizontalAlignment="Center" Margin="0, 3, 0, 0" Click="ConnectButtonClicked"/>
 			</Grid>
 	</StackPanel>

@@ -48,6 +48,8 @@ namespace MQTTAvalonia
         {
             InitializeComponent();
             DataContext = this;
+
+            
         }
         #endregion
 
@@ -189,6 +191,7 @@ namespace MQTTAvalonia
         private void UpdateReceivedMessages(string message)
         {
             tb_ReceivedMessage.Text += $"{message}\n\n";
+            sv_ReceivedMessage.ScrollToEnd();
         }
 
         private void ShowLastMessage(object sender, RoutedEventArgs e)
@@ -344,6 +347,14 @@ namespace MQTTAvalonia
                 Client.Subscribe(new[] { topic }, new byte[] { qosLevel });
             }
 
+        }
+
+        private void lb_Subscriptions_SelectionChanged(object? sender, Avalonia.Controls.SelectionChangedEventArgs e)
+        {
+            if (lb_Subscriptions.SelectedIndex >= 0)
+                btn_Unsubscribe.IsEnabled = true;
+            else
+                btn_Unsubscribe.IsEnabled = false;
         }
     }
 }

@@ -43,14 +43,20 @@ namespace MQTTAvalonia
             {
                 tb_Username.IsVisible = false; tb_Password.IsVisible = false;
             }
-            
 
-            
+
+
         }
 
         private void cb_UseAuth_Click(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
         {
             ToggleAuthControls();
+        }
+
+        private void tb_Connect_KeyDown(object? sender, Avalonia.Input.KeyEventArgs e)
+        {
+            if (e.Key == Avalonia.Input.Key.Enter)
+                ConnectButtonClicked(sender, e);
         }
     }
 }
