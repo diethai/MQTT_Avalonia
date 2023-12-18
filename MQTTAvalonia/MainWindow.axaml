@@ -27,7 +27,7 @@
 				<TextBlock Grid.Column="0" x:Name="connectionStatusTextBlock" Text="Connection" VerticalAlignment="Center" HorizontalAlignment="Left"></TextBlock>
 				<TextBlock Grid.Column="2" x:Name="tb_BrokerName" VerticalAlignment="Center"></TextBlock>
 				<Ellipse Grid.Column="3" x:Name="connectionStatusCircle" Margin="3, 0, 3, 0" Height="8" Width="8" Fill="Red"> </Ellipse>
-				<Button Grid.Column="4" Content="Disconnect" Click="DisconnectClicked">
+				<Button Grid.Column="4" Content="Disconnect" Click="DisconnectClicked" BorderBrush="Black">
 				</Button>
 			</Grid>
 		</Border>
@@ -42,14 +42,16 @@
 					<Grid RowDefinitions="Auto, Auto" Margin="3, 3, 3, 3">
 						<TextBlock Grid.Row="0" Text="Subscriptions"></TextBlock>
 						<!--Enter Topic Section-->
-						<Grid Grid.Row="1" ColumnDefinitions=" *, Auto, Auto">
-							<TextBox x:Name="tb_EnterTopicName" Grid.Column="0" Watermark="Enter Topic"></TextBox>
-							<ComboBox Grid.Column="1" x:Name="cb_QosSubscribe" SelectedIndex="0">
-								<ComboBoxItem Content="QOS: 0"></ComboBoxItem>
-								<ComboBoxItem Content="QOS: 1"></ComboBoxItem>
-								<ComboBoxItem Content="QOS: 2"></ComboBoxItem>
-							</ComboBox>
-							<Button x:Name="btn_Subscribe" Grid.Column="2" Content="Subscribe" Background="LightBlue" Click="SubscribeToTopic_Clicked"></Button>
+						<Grid Grid.Row="1" RowDefinitions=" *, Auto">
+							<TextBox x:Name="tb_EnterTopicName" Grid.Row="0" Watermark="Enter Topic" MaxWidth="240" Margin="0, 5, 0, 5"></TextBox>
+							<Grid Grid.Row="1" ColumnDefinitions="Auto, Auto">
+								<ComboBox Grid.Column="0" x:Name="cb_QosSubscribe" SelectedIndex="0">
+									<ComboBoxItem Content="QOS: 0"></ComboBoxItem>
+									<ComboBoxItem Content="QOS: 1"></ComboBoxItem>
+									<ComboBoxItem Content="QOS: 2"></ComboBoxItem>
+								</ComboBox>
+								<Button x:Name="btn_Subscribe" Grid.Column="1" Content="Subscribe" Background="LightBlue" BorderBrush="Black" Click="SubscribeToTopic_Clicked"></Button>
+							</Grid>
 						</Grid>
 					</Grid>
 				</Border>
@@ -57,7 +59,10 @@
 				<!--Subscribed Topics-->
 				<Border Grid.Row="1" CornerRadius="10" Background="WhiteSmoke" Margin="0, 0, 0, 5">
 					<Grid RowDefinitions="Auto, *" Height="200" Margin="3, 3, 3, 3">
-						<TextBlock Grid.Row="0" Text="Subscribed Topics"></TextBlock>
+						<Grid Grid.Row="0" ColumnDefinitions="*, Auto" Margin="0, 3, 0, 3">
+							<TextBlock Grid.Column="0" Text="Subscribed Topics" VerticalAlignment="Center"></TextBlock>
+							<Button Grid.Column="1" Content="Unsubscribe" Click="UnsubscribeFromTopic_Clicked" Background="LightBlue" BorderBrush="Black" Margin="5, 0, 0, 0"></Button>
+						</Grid>
 						<Border Grid.Row="1" CornerRadius="3" BorderBrush="black" BorderThickness="2">
 							<ListBox x:Name="lb_Subscriptions" SelectionMode="Single"></ListBox>
 						</Border>
@@ -75,7 +80,7 @@
 								<ComboBoxItem Content="QOS: 1"></ComboBoxItem>
 								<ComboBoxItem Content="QOS: 2"></ComboBoxItem>
 							</ComboBox>
-							<Button x:Name="btn_Publish" Grid.Column="1" Click="PublishMessage" Content="Publish" Background="LightBlue"></Button>
+							<Button x:Name="btn_Publish" Grid.Column="1" Click="PublishMessage" BorderBrush="Black" Content="Publish" Background="LightBlue"></Button>
 						</Grid>
 					</Grid>
 				</Border>
@@ -89,7 +94,7 @@
 					<Grid Grid.Row="2" ColumnDefinitions="Auto, Auto, * Auto" Margin="5, 0, 0, 0">
 						<TextBlock Grid.Column="0" Text="QOS Status: " VerticalAlignment="Center" HorizontalAlignment="Right"></TextBlock>
 						<TextBlock  Width="300" Grid.Column="1" x:Name="tb_qosStatus" VerticalAlignment="Center" HorizontalAlignment="Left"></TextBlock>
-						<Button Grid.Column="2" Click="DeleteReceivedMessages" Content="Clear"  HorizontalAlignment="Right" Margin="0, 3, 3, 3"></Button>
+						<Button Grid.Column="2" Click="DeleteReceivedMessages" Content="Clear" BorderBrush="Black" HorizontalAlignment="Right" Margin="0, 3, 3, 3"></Button>
 					</Grid>
 				</Grid>
 			</Border>

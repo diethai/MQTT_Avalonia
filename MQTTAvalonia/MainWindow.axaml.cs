@@ -340,6 +340,7 @@ namespace MQTTAvalonia
                 m_SubscribedTopics.Add(topic);
                 lb_Subscriptions.ItemsSource = null;
                 lb_Subscriptions.ItemsSource = m_SubscribedTopics;
+                lb_Subscriptions.SelectedIndex = lb_Subscriptions.ItemCount - 1;
                 Client.Subscribe(new[] { topic }, new byte[] { qosLevel });
             }
 
