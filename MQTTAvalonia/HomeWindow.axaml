@@ -21,7 +21,7 @@
 				<TextBlock Grid.Row="2" Text="MQTT-Explorer" HorizontalAlignment="Center" FontSize="30"/>
 			</Grid>
 		<!-- Connection Grid -->
-			<Grid Grid.Row="1" RowDefinitions="Auto, Auto, Auto, Auto, Auto, Auto, Auto" >
+			<Grid Grid.Row="1" RowDefinitions="Auto, Auto, Auto, Auto, Auto, Auto, Auto" Margin="10,0,10,0" >
 				<TextBlock x:Name="tb_status" Text="Connect To Broker" HorizontalAlignment="Center"/>
 				<TextBox x:Name="tb_BrokerURL" Grid.Row="1" KeyDown="tb_Connect_KeyDown" Watermark="Enter Broker URL" Margin="0, 3, 0, 0"/>
 				<TextBox x:Name="tb_Port" Grid.Row="2" KeyDown="tb_Connect_KeyDown" Watermark="Enter Port" Margin="0, 3, 0, 0"/>
