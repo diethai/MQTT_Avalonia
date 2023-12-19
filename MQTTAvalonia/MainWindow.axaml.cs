@@ -13,22 +13,18 @@ using System.Xml.Schema;
 using Avalonia.Media;
 using Tmds.DBus.Protocol;
 using System.Collections.ObjectModel;
+using Avalonia.Controls.Documents;
 
 namespace MQTTAvalonia
 {
     public partial class MainWindow : Window
     {
         #region Properties
-        // Broker URI und Port
-        // broker.hivemq.com
         public string? BrokerUri { get; set; }
         public MqttClient? Client { get; set; }
 
         public EventHandler GoBackRequested;
 
-        //public bool UseAuth { get; set; }
-        //public string? AuthUser { get; set; }
-        //public string? AuthPass { get; set; }
         public string? m_TopicName { get; set; }
         public string? m_ReceivedMessage { get; set; }
         public bool m_IsConnected { get; set; } = false;
@@ -45,13 +41,15 @@ namespace MQTTAvalonia
 
         public string m_connectionStatus;
 
-        #endregion // Properties
+        #endregion 
 
         #region Constructor
         public MainWindow()
         {
             InitializeComponent();
             DataContext = this;
+
+            
         }
         #endregion
 
@@ -76,6 +74,7 @@ namespace MQTTAvalonia
             {
                 Client = new MqttClient(BrokerUri);
                 Client.MqttMsgPublishReceived += Client_MqttMsgPublishReceived;
+                Client.MqttMsgPublished += Client_MqttMsgPublished;
             }
             catch (Exception ex)
             {
@@ -85,8 +84,6 @@ namespace MQTTAvalonia
                 return false;
             }
 
-
-            // Verbindung zum Broker herstellen
             string clientId = Guid.NewGuid().ToString();
 
             try
@@ -104,6 +101,23 @@ namespace MQTTAvalonia
                 return false;
             }
             return true;
+        }
+
+        private void Client_MqttMsgPublished(object sender, MqttMsgPublishedEventArgs e)
+        {
+            string status;
+            if (e.IsPublished)
+            {
+                status = "Publish succesful";
+            }
+            else
+            {
+                status = "Error: Publishing was not succesful";
+            }
+            Dispatcher.UIThread.InvokeAsync(() =>
+            {
+                tb_qosStatus.Text = status;
+            });
         }
 
         private void DisconnectClicked(object? sender, RoutedEventArgs e)
@@ -140,49 +154,55 @@ namespace MQTTAvalonia
                 {
                     return;
                 }
-                Client.Publish(topic, System.Text.Encoding.UTF8.GetBytes(message));
+                byte qosLevel = getQosLevel(cb_QosPublish.SelectedIndex);
+                Client.Publish(topic, System.Text.Encoding.UTF8.GetBytes(message), qosLevel, false);
             }
         }
 
+        private byte getQosLevel(int index)
+        {
+            switch (index)
+            {
+                default: return MqttMsgBase.QOS_LEVEL_AT_MOST_ONCE; break;
+                case 1: return MqttMsgBase.QOS_LEVEL_AT_LEAST_ONCE; break;
+                case 2: return MqttMsgBase.QOS_LEVEL_EXACTLY_ONCE; break;
+            }
+
+        }
         private void DeleteReceivedMessages(object sender, RoutedEventArgs e)
         {
             tb_ReceivedMessage.Text = "";
         }
 
-
-        // Aktualisierte Methode zum Behandeln von empfangenen Nachrichten für abonnierte Topics
         private void Client_MqttMsgPublishReceived(object sender, MqttMsgPublishEventArgs e)
         {
             string receivedMessage = System.Text.Encoding.UTF8.GetString(e.Message);
 
+            //string? subscribedTopicMatch = null;
+            //subscribedTopicMatch = m_SubscribedTopics.FirstOrDefault(t => t.Equals(e.Topic));
+
             Dispatcher.UIThread.InvokeAsync(() =>
             {
-                // Überprüfen, ob die empfangene Nachricht zu einem abonnierten Topic gehört
-                string subscribedTopic = m_SubscribedTopics.FirstOrDefault(t => t.Equals(e.Topic));
-                if (subscribedTopic != null)
-                {
-                    // Anzeigen der empfangenen Nachricht für das abonnierte Topic
-                    UpdateReceivedMessages($"{e.Topic}:\t {receivedMessage}");
-                }
+                //if (subscribedTopicMatch != null)
+                UpdateReceivedMessages($"{e.Topic}:\t {receivedMessage}");
             });
         }
 
         private void UpdateReceivedMessages(string message)
         {
             tb_ReceivedMessage.Text += $"{message}\n\n";
+            sv_ReceivedMessage.ScrollToEnd();
         }
 
         private void ShowLastMessage(object sender, RoutedEventArgs e)
         {
             string
-                lastTopicID = GetLastTopicIDFromDatabase(); // Annahme: Methode, um die ID des letzten Topics abzurufen
+                lastTopicID = GetLastTopicIDFromDatabase();
             string
-                lastTopic = GetTopic(lastTopicID); // Verwendung der GetTopic-Methode, um den Namen des Topics abzurufen
+                lastTopic = GetTopic(lastTopicID);
             string
                 lastMessage =
-                    GetMessage(lastTopic); // Verwendung der GetMessage-Methode, um die letzte Nachricht für das Topic abzurufen
-
-            // Setzen der letzten Nachricht in die MessageTextBox
+                    GetMessage(lastTopic);
             tb_Message.Text = lastMessage;
         }
 
@@ -319,12 +339,22 @@ namespace MQTTAvalonia
 
             if (!m_SubscribedTopics.Contains(topic))
             {
+                byte qosLevel = getQosLevel(cb_QosSubscribe.SelectedIndex);
                 m_SubscribedTopics.Add(topic);
                 lb_Subscriptions.ItemsSource = null;
                 lb_Subscriptions.ItemsSource = m_SubscribedTopics;
-                Client.Subscribe(new[] { topic }, new byte[] { MqttMsgBase.QOS_LEVEL_AT_LEAST_ONCE });
+                lb_Subscriptions.SelectedIndex = lb_Subscriptions.ItemCount - 1;
+                Client.Subscribe(new[] { topic }, new byte[] { qosLevel });
             }
 
+        }
+
+        private void lb_Subscriptions_SelectionChanged(object? sender, Avalonia.Controls.SelectionChangedEventArgs e)
+        {
+            if (lb_Subscriptions.SelectedIndex >= 0)
+                btn_Unsubscribe.IsEnabled = true;
+            else
+                btn_Unsubscribe.IsEnabled = false;
         }
     }
 }
