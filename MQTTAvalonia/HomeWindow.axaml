@@ -1,0 +1,34 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        mc:Ignorable="d"
+        x:Class="MQTTAvalonia.HomeWindow"
+        Title="Home"
+		Width="400"
+        Height="500"
+        MinWidth="400"
+        MinHeight="500"
+		MaxWidth="400"
+		MaxHeight="500">
+
+
+	<StackPanel>
+		<!-- Header -->
+			<Grid Height="250" RowDefinitions="Auto, Auto, Auto" Margin="0, 10, 0, 0">
+				<TextBlock Grid.Row="0" Text="Welcome" HorizontalAlignment="Center" FontSize="30"/>
+				<TextBlock Grid.Row="1" Text="To" HorizontalAlignment="Center" FontSize="30"/>
+				<TextBlock Grid.Row="2" Text="MQTT-Explorer" HorizontalAlignment="Center" FontSize="30"/>
+			</Grid>
+		<!-- Connection Grid -->
+			<Grid Grid.Row="1" RowDefinitions="Auto, Auto, Auto, Auto, Auto, Auto, Auto" Margin="10,0,10,0" >
+				<TextBlock x:Name="tb_status" Text="Connect To Broker" HorizontalAlignment="Center"/>
+				<TextBox x:Name="tb_BrokerURL" Grid.Row="1" KeyDown="tb_Connect_KeyDown" Watermark="Enter Broker URL" Margin="0, 3, 0, 0"/>
+				<TextBox x:Name="tb_Port" Grid.Row="2" KeyDown="tb_Connect_KeyDown" Watermark="Enter Port" Margin="0, 3, 0, 0"/>
+				<CheckBox x:Name="cb_UseAuth" Grid.Row="3" Content="Use Authorization" Click="cb_UseAuth_Click"/>
+				<TextBox x:Name="tb_Username" Grid.Row="4" KeyDown="tb_Connect_KeyDown" Watermark="Enter Username" IsVisible="False" Margin="0, 3, 0, 0"/>
+				<TextBox x:Name="tb_Password" PasswordChar="*" Grid.Row="5" KeyDown="tb_Connect_KeyDown" Watermark="Enter Password" IsVisible="False" Margin="0, 3, 0, 0"/>
+				<Button Grid.Row="6" Content="Connect" HorizontalAlignment="Center" Margin="0, 3, 0, 0" Click="ConnectButtonClicked"/>
+			</Grid>
+	</StackPanel>
+</Window>
